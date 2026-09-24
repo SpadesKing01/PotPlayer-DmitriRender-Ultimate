@@ -94,6 +94,10 @@ if (Test-Path $patchSrc) {
 Write-Host "[6/7] 正在配置后台静默自动续期计划任务 (每20天自动维护)..." -ForegroundColor Yellow
 & schtasks.exe /Delete /TN "DmitriRender_AutoReset" /F 2>$null | Out-Null
 & schtasks.exe /Create /SC DAILY /MO 20 /TN "DmitriRender_AutoReset" /TR "powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \`"$autoResetPs1\`"" /F | Out-Null
+try {
+    $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
+    Set-ScheduledTask -TaskName "DmitriRender_AutoReset" -Settings $settings -ErrorAction SilentlyContinue | Out-Null
+} catch {}
 
 # 7. Create Desktop Shortcut and File Associations
 Write-Host "[7/7] 正在创建桌面快捷方式及关联媒体文件格式..." -ForegroundColor Yellow
@@ -157,6 +161,7 @@ Write-Host "  - DmitriRender 插帧 + 去水印: 已生效" -ForegroundColor Gre
 Write-Host "  - 4K 10-bit NV12 转换与 LAV 音频解码: 已配置" -ForegroundColor Green
 Write-Host "  - 官方高清图标与常用格式关联: 已生效" -ForegroundColor Green
 Write-Host "========================================================" -ForegroundColor Green
+
 
 
 
