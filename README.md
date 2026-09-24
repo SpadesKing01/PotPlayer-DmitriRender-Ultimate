@@ -3,7 +3,7 @@
 [简体中文](README.md) | [English](README_EN.md)
 
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010%20%2F%2011%20(64--bit)-blue.svg)](#)
-[![PotPlayer](https://img.shields.io/badge/PotPlayer-v1.7.23121-orange.svg)](#)
+[![PotPlayer](https://img.shields.io/badge/PotPlayer-v1.7.23122-orange.svg)](#)
 [![DmitriRender](https://img.shields.io/badge/DmitriRender-v5.0.0.1-green.svg)](#)
 [![LAV Filters](https://img.shields.io/badge/LAV%20Filters-v0.79.2-purple.svg)](#)
 [![madVR](https://img.shields.io/badge/madVR-v0.92.17-red.svg)](#)
@@ -19,7 +19,7 @@
 
 | 组件名称 | 详细版本 | 架构 | 功能与特性说明 |
 | :--- | :--- | :--- | :--- |
-| **PotPlayer** | `v1.7.23121` | x64 | 核心播放器，预设极致性能与纯净观影配置 |
+| **PotPlayer** | `v1.7.23122` | x64 | 核心播放器，预设极致性能与纯净观影配置 |
 | **DmitriRender** | `v5.0.0.1` | x64 | GPU 光流实时补帧核心，稳定 60/120/144/240 FPS |
 | **LAV Filters** | `v0.79.2` | x64 | 顶级 DirectShow 分离与解码套件，全景声/DTS直出 |
 | **madVR** | `v0.92.17` | x86/x64 | 发烧级视频渲染引擎，高端色阶插值与精准色调映射 |

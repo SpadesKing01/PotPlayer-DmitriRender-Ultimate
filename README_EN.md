@@ -3,7 +3,7 @@
 [English](README_EN.md) | [简体中文](README.md)
 
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010%20%2F%2011%20(64--bit)-blue.svg)](#)
-[![PotPlayer](https://img.shields.io/badge/PotPlayer-v1.7.23121-orange.svg)](#)
+[![PotPlayer](https://img.shields.io/badge/PotPlayer-v1.7.23122-orange.svg)](#)
 [![DmitriRender](https://img.shields.io/badge/DmitriRender-v5.0.0.1-green.svg)](#)
 [![LAV Filters](https://img.shields.io/badge/LAV%20Filters-v0.79.2-purple.svg)](#)
 [![madVR](https://img.shields.io/badge/madVR-v0.92.17-red.svg)](#)
@@ -19,7 +19,7 @@ Completely overcomes DmitriRender StarForce expiration locks, 2026 calendar hard
 
 | Component | Exact Version | Arch | Description & Features |
 | :--- | :--- | :--- | :--- |
-| **PotPlayer** | `v1.7.23121` | x64 | Core media player with tuned performance presets, clean & ad-free |
+| **PotPlayer** | `v1.7.23122` | x64 | Core media player with tuned performance presets, clean & ad-free |
 | **DmitriRender** | `v5.0.0.1` | x64 | GPU optical flow real-time frame interpolation (60/120/144/240 FPS) |
 | **LAV Filters** | `v0.79.2` | x64 | DirectShow audio/video splitters & decoders (Dolby Atmos/DTS passthrough) |
 | **madVR** | `v0.92.17` | x86/x64 | High-end video renderer with chromatic upscaling & HDR tone mapping |
