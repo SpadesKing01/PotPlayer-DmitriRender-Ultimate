@@ -108,7 +108,7 @@ $shortcut = $wsh.CreateShortcut((Join-Path $desktopPath "PotPlayer (插帧免续
 $shortcut.TargetPath = $runAsDate
 $shortcut.Arguments = "/movetime Hours:-17520 `"$potExe`""
 $shortcut.WorkingDirectory = $potDir
-$shortcut.IconLocation = "$iconsDll,0"
+$shortcut.IconLocation = "$potExe,0"
 $shortcut.Description = "PotPlayer 64-bit with DmitriRender 60FPS"
 $shortcut.Save()
 
@@ -124,7 +124,7 @@ foreach ($app in $appsToRegister) {
     
     $appIconKey = "$appKey\DefaultIcon"
     if (-not (Test-Path $appIconKey)) { New-Item -Path $appIconKey -Force | Out-Null }
-    Set-ItemProperty -Path $appIconKey -Name "(Default)" -Value "$iconsDll,0"
+    Set-ItemProperty -Path $appIconKey -Name "(Default)" -Value "$potExe,0"
     
     $appCmdKey = "$appKey\shell\open\command"
     if (-not (Test-Path $appCmdKey)) { New-Item -Path $appCmdKey -Force | Out-Null }
@@ -136,7 +136,7 @@ $capKey = "HKCU:\Software\Daum\PotPlayerMini64\Capabilities"
 if (-not (Test-Path $capKey)) { New-Item -Path $capKey -Force | Out-Null }
 Set-ItemProperty -Path $capKey -Name "ApplicationName" -Value "PotPlayer (插帧免续期版)"
 Set-ItemProperty -Path $capKey -Name "ApplicationDescription" -Value "PotPlayer 64-bit 终极免续期插帧绿化版"
-Set-ItemProperty -Path $capKey -Name "ApplicationIcon" -Value "$iconsDll,0"
+Set-ItemProperty -Path $capKey -Name "ApplicationIcon" -Value "$potExe,0"
 
 $regAppKey = "HKCU:\Software\RegisteredApplications"
 if (-not (Test-Path $regAppKey)) { New-Item -Path $regAppKey -Force | Out-Null }
