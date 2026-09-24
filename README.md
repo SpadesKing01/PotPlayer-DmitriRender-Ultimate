@@ -1,5 +1,7 @@
 # PotPlayer + DmitriRender + LAV Filters + madVR 终极免续期绿化整合版
 
+[简体中文](README.md) | [English](README_EN.md)
+
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010%20%2F%2011%20(64--bit)-blue.svg)](#)
 [![PotPlayer](https://img.shields.io/badge/PotPlayer-v1.7.23121-orange.svg)](#)
 [![DmitriRender](https://img.shields.io/badge/DmitriRender-v5.0.0.1-green.svg)](#)
