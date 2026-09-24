@@ -33,6 +33,7 @@ if (Test-Path "$lavX64\LAVAudio.ax") {
 # 4. Remove file associations and Desktop shortcut
 Write-Host "[4/5] 正在清理文件关联与桌面快捷方式..." -ForegroundColor Yellow
 $desktopPath = [Environment]::GetFolderPath('Desktop')
+Remove-Item -Path (Join-Path $desktopPath "PotPlayer.lnk") -Force -ErrorAction SilentlyContinue
 Remove-Item -Path (Join-Path $desktopPath "PotPlayer (插帧免续期版).lnk") -Force -ErrorAction SilentlyContinue
 
 $exts = @('mp4', 'mkv', 'avi', 'flv', 'mov', 'wmv', 'ts', 'webm', 'm4v', 'rmvb', 'mp3', 'flac', 'wav', 'aac', 'm4a', 'iso', 'vob', 'mpg', 'mpeg', '3gp')

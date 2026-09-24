@@ -93,7 +93,7 @@ PotPlayer_GreenPackage/
 
 - **双击视频弹出“选择打开方式”时的选法**：
   若系统首次弹出“你要如何打开此文件？”或“打开方式”窗口：
-  - 请在列表中直接选择 **`PotPlayer (插帧免续期版)`**（带有**经典黄色播放器圆角方块图标**）；
+  - 请在列表中直接选择 **`PotPlayer`**（带有**经典黄色播放器圆角方块图标**）；
   - 勾选 **【始终使用此应用打开】**，点击确定即可。
   - *说明*：底层注册表已强行注入 `-17520h` 动态相对时钟，选择该项后将自动触发免续期环境并加载 60FPS 光流插帧。
 - **全自动默认关联**：
@@ -153,7 +153,7 @@ PotPlayer_GreenPackage/
 
 ### v2.0 (2026-09-24)
 - **[官方原生图标对齐]**：桌面快捷方式与 Windows 打开方式列表图标统一锁定为 PotPlayer 官方经典黄色圆角方块图标（`PotPlayerMini64.exe,0`），彻底摒弃通用蓝线三角形与 RunAsDate 日历图标。
-- **[默认应用与打开方式友好命名]**：全面配置 Windows `Capabilities` 与 `RegisteredApplications` 认证，右键菜单及系统默认应用识别为标准中文名称 `PotPlayer (插帧免续期版)`。
+- **[默认应用与打开方式纯净命名]**：全面配置 Windows `Capabilities` 与 `RegisteredApplications` 认证，右键菜单及系统默认应用识别为纯净正版名称 `PotPlayer`。
 - **[动态相对时间欺骗架构]**：时间伪装算法由固定绝对日期升级为 `/movetime Hours:-17520` 相对时间偏移机制，时钟随系统自然流逝，彻底打破 StarForce 2026 年硬边界并根除“时钟倒退检测”锁死。
 - **[后台静默全自动续期]**：内置独立维护脚本 `AutoReset_Dmitri.ps1`，注册 Windows 任务计划程序 `DmitriRender_AutoReset`（每 20 天自动执行），实现终身免人工维护与自动签发。
 - **[4K 10-bit HDR 色彩绿屏根治]**：调优硬件解码预设，强制启用 `D3D11 Copy-Back` 显存直转 NV12，彻底解决 DmitriRender 渲染高位深 HEVC/HDR 视频时的半边绿屏与色彩错乱。

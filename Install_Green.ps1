@@ -104,7 +104,8 @@ Write-Host "[7/7] 正在创建桌面快捷方式及关联媒体文件格式..." 
 
 $wsh = New-Object -ComObject WScript.Shell
 $desktopPath = [Environment]::GetFolderPath('Desktop')
-$shortcut = $wsh.CreateShortcut((Join-Path $desktopPath "PotPlayer (插帧免续期版).lnk"))
+Remove-Item -Path (Join-Path $desktopPath "PotPlayer (插帧免续期版).lnk") -Force -ErrorAction SilentlyContinue
+$shortcut = $wsh.CreateShortcut((Join-Path $desktopPath "PotPlayer.lnk"))
 $shortcut.TargetPath = $runAsDate
 $shortcut.Arguments = "/movetime Hours:-17520 `"$potExe`""
 $shortcut.WorkingDirectory = $potDir
@@ -119,8 +120,8 @@ $appsToRegister = @("PotPlayerMini64.exe", "RunAsDate.exe")
 foreach ($app in $appsToRegister) {
     $appKey = "HKCU:\Software\Classes\Applications\$app"
     if (-not (Test-Path $appKey)) { New-Item -Path $appKey -Force | Out-Null }
-    Set-ItemProperty -Path $appKey -Name "(Default)" -Value "PotPlayer (插帧免续期版)"
-    Set-ItemProperty -Path $appKey -Name "FriendlyAppName" -Value "PotPlayer (插帧免续期版)"
+    Set-ItemProperty -Path $appKey -Name "(Default)" -Value "PotPlayer"
+    Set-ItemProperty -Path $appKey -Name "FriendlyAppName" -Value "PotPlayer"
     
     $appIconKey = "$appKey\DefaultIcon"
     if (-not (Test-Path $appIconKey)) { New-Item -Path $appIconKey -Force | Out-Null }
@@ -134,7 +135,7 @@ foreach ($app in $appsToRegister) {
 # Register Capabilities for Windows Default Apps registry
 $capKey = "HKCU:\Software\Daum\PotPlayerMini64\Capabilities"
 if (-not (Test-Path $capKey)) { New-Item -Path $capKey -Force | Out-Null }
-Set-ItemProperty -Path $capKey -Name "ApplicationName" -Value "PotPlayer (插帧免续期版)"
+Set-ItemProperty -Path $capKey -Name "ApplicationName" -Value "PotPlayer"
 Set-ItemProperty -Path $capKey -Name "ApplicationDescription" -Value "PotPlayer 64-bit 终极免续期插帧绿化版"
 Set-ItemProperty -Path $capKey -Name "ApplicationIcon" -Value "$potExe,0"
 
