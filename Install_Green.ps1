@@ -112,6 +112,39 @@ $shortcut.IconLocation = "$iconsDll,0"
 $shortcut.Description = "PotPlayer 64-bit with DmitriRender 60FPS"
 $shortcut.Save()
 
+$cmd = "`"$runAsDate`" /movetime Hours:-17520 `"$potExe`" `"%1`""
+
+# Register Friendly Name and Official PotPlayer Icon for both entries
+$appsToRegister = @("PotPlayerMini64.exe", "RunAsDate.exe")
+foreach ($app in $appsToRegister) {
+    $appKey = "HKCU:\Software\Classes\Applications\$app"
+    if (-not (Test-Path $appKey)) { New-Item -Path $appKey -Force | Out-Null }
+    Set-ItemProperty -Path $appKey -Name "(Default)" -Value "PotPlayer (插帧免续期版)"
+    Set-ItemProperty -Path $appKey -Name "FriendlyAppName" -Value "PotPlayer (插帧免续期版)"
+    
+    $appIconKey = "$appKey\DefaultIcon"
+    if (-not (Test-Path $appIconKey)) { New-Item -Path $appIconKey -Force | Out-Null }
+    Set-ItemProperty -Path $appIconKey -Name "(Default)" -Value "$iconsDll,0"
+    
+    $appCmdKey = "$appKey\shell\open\command"
+    if (-not (Test-Path $appCmdKey)) { New-Item -Path $appCmdKey -Force | Out-Null }
+    Set-ItemProperty -Path $appCmdKey -Name "(Default)" -Value $cmd
+}
+
+# Register Capabilities for Windows Default Apps registry
+$capKey = "HKCU:\Software\Daum\PotPlayerMini64\Capabilities"
+if (-not (Test-Path $capKey)) { New-Item -Path $capKey -Force | Out-Null }
+Set-ItemProperty -Path $capKey -Name "ApplicationName" -Value "PotPlayer (插帧免续期版)"
+Set-ItemProperty -Path $capKey -Name "ApplicationDescription" -Value "PotPlayer 64-bit 终极免续期插帧绿化版"
+Set-ItemProperty -Path $capKey -Name "ApplicationIcon" -Value "$iconsDll,0"
+
+$regAppKey = "HKCU:\Software\RegisteredApplications"
+if (-not (Test-Path $regAppKey)) { New-Item -Path $regAppKey -Force | Out-Null }
+Set-ItemProperty -Path $regAppKey -Name "PotPlayerMini64" -Value "Software\Daum\PotPlayerMini64\Capabilities"
+
+$capAssocKey = "$capKey\FileAssociations"
+if (-not (Test-Path $capAssocKey)) { New-Item -Path $capAssocKey -Force | Out-Null }
+
 $extIcons = @{
     'mp4' = 13; 'mkv' = 15; 'avi' = 1; 'flv' = 21; 'mov' = 20;
     'wmv' = 7; 'ts' = 33; 'webm' = 0; 'm4v' = 14; 'rmvb' = 12;
@@ -122,10 +155,12 @@ $extIcons = @{
 foreach ($ext in $extIcons.Keys) {
     $progId = "PotPlayerMini64.$ext"
     $iconIdx = $extIcons[$ext]
-    $cmd = "`"$runAsDate`" /movetime Hours:-17520 `"$potExe`" `"%1`""
+    
+    Set-ItemProperty -Path $capAssocKey -Name ".$ext" -Value $progId
     
     $progKey = "HKCU:\Software\Classes\$progId"
     if (-not (Test-Path $progKey)) { New-Item -Path $progKey -Force | Out-Null }
+    Set-ItemProperty -Path $progKey -Name "(Default)" -Value "$ext 媒体文件"
     
     $iconKey = "$progKey\DefaultIcon"
     if (-not (Test-Path $iconKey)) { New-Item -Path $iconKey -Force | Out-Null }
@@ -138,8 +173,21 @@ foreach ($ext in $extIcons.Keys) {
     $extKey = "HKCU:\Software\Classes\.$ext"
     if (-not (Test-Path $extKey)) { New-Item -Path $extKey -Force | Out-Null }
     Set-ItemProperty -Path $extKey -Name "(Default)" -Value $progId
+    
+    # Configure OpenWithList to make PotPlayer the default chosen application
+    $owListKey = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.$ext\OpenWithList"
+    if (-not (Test-Path $owListKey)) { New-Item -Path $owListKey -Force | Out-Null }
+    Set-ItemProperty -Path $owListKey -Name "a" -Value "PotPlayerMini64.exe" -Force
+    Set-ItemProperty -Path $owListKey -Name "MRUList" -Value "a" -Force
+    
+    $owProgKey = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.$ext\OpenWithProgids"
+    if (-not (Test-Path $owProgKey)) { New-Item -Path $owProgKey -Force | Out-Null }
+    Set-ItemProperty -Path $owProgKey -Name $progId -Value ([byte[]]@()) -Force
+    Set-ItemProperty -Path $owProgKey -Name "Applications\PotPlayerMini64.exe" -Value ([byte[]]@()) -Force
 }
 
+# Flush icon cache
+& ie4uinit.exe -show 2>$null
 try {
     $typeDef = @"
     using System;
@@ -155,13 +203,9 @@ try {
 
 Write-Host "========================================================" -ForegroundColor Green
 Write-Host "  安装完成！PotPlayer 绿化版已就绪。" -ForegroundColor Green
+Write-Host "  - 默认视频播放器: 已关联 20 种媒体格式" -ForegroundColor Green
+Write-Host "  - 播放器图标: 官方高清矢量图标已全局生效 (无 RunAsDate 图标)" -ForegroundColor Green
 Write-Host "  - 动态时间欺骗: -17520小时 (免续期)" -ForegroundColor Green
 Write-Host "  - 后台静默续期任务: DmitriRender_AutoReset (每20天自动维护)" -ForegroundColor Green
 Write-Host "  - DmitriRender 插帧 + 去水印: 已生效" -ForegroundColor Green
-Write-Host "  - 4K 10-bit NV12 转换与 LAV 音频解码: 已配置" -ForegroundColor Green
-Write-Host "  - 官方高清图标与常用格式关联: 已生效" -ForegroundColor Green
 Write-Host "========================================================" -ForegroundColor Green
-
-
-
-
