@@ -1,14 +1,28 @@
 # PotPlayer + DmitriRender + LAV Filters + madVR 终极免续期绿化整合版
 
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010%20%2F%2011%20(64--bit)-blue.svg)](#)
-[![PotPlayer](https://img.shields.io/badge/PotPlayer-64--bit-orange.svg)](#)
+[![PotPlayer](https://img.shields.io/badge/PotPlayer-v1.7.23121-orange.svg)](#)
 [![DmitriRender](https://img.shields.io/badge/DmitriRender-v5.0.0.1-green.svg)](#)
-[![LAV Filters](https://img.shields.io/badge/LAV%20Filters-x64-purple.svg)](#)
+[![LAV Filters](https://img.shields.io/badge/LAV%20Filters-v0.79.2-purple.svg)](#)
 [![madVR](https://img.shields.io/badge/madVR-v0.92.17-red.svg)](#)
+[![RunAsDate](https://img.shields.io/badge/RunAsDate-v1.41-brightgreen.svg)](#)
 
 开箱即用的 Windows 64 位极致观影体验整合包。完美融合 **PotPlayer** 现代播放器、**DmitriRender 5.0.0.1** 实时 GPU 光流补帧、**LAV Filters** 强力音视频解码器与 **madVR** 高画质视频渲染器。
 
 彻底解决 DmitriRender 试用期 StarForce 锁死、2026年硬边界、时钟倒退检测、右下角跑动水印以及 4K 10-bit HDR 绿屏色域异常等顽疾。
+
+---
+
+## 📦 集成组件版本一览
+
+| 组件名称 | 详细版本 | 架构 | 功能与特性说明 |
+| :--- | :--- | :--- | :--- |
+| **PotPlayer** | `v1.7.23121` | x64 | 核心播放器，预设极致性能与纯净观影配置 |
+| **DmitriRender** | `v5.0.0.1` | x64 | GPU 光流实时补帧核心，稳定 60/120/144/240 FPS |
+| **LAV Filters** | `v0.79.2` | x64 | 顶级 DirectShow 分离与解码套件，全景声/DTS直出 |
+| **madVR** | `v0.92.17` | x86/x64 | 发烧级视频渲染引擎，高端色阶插值与精准色调映射 |
+| **RunAsDate** | `v1.41` | x64 | 动态相对时钟欺骗器（锁定滞后 2 年相对安全窗口） |
+| **Watermark Patch**| `version.dll` | x64 | 内存补丁，彻底消除 DmitriRender 试用跑动水印 |
 
 ---
 
@@ -75,12 +89,18 @@ PotPlayer_GreenPackage/
 7. 写入 Windows 默认媒体播放器能力集（Capabilities）并绑定 20 种常用格式；
 8. 全局锁定 PotPlayer 官方高清图标并自动广播刷新 Explorer 缓存。
 
-### 3. 默认播放器与官方图标说明
+### 3. 默认播放器与打开方式选择指引
 
+- **双击视频弹出“选择打开方式”时的选法**：
+  若系统首次弹出“你要如何打开此文件？”或“打开方式”窗口：
+  - 请在列表中直接选择 **`PotPlayer (插帧免续期版)`**（带有**经典黄色播放器圆角方块图标**）；
+  - 勾选 **【始终使用此应用打开】**，点击确定即可。
+  - *说明*：底层注册表已强行注入 `-17520h` 动态相对时钟，选择该项后将自动触发免续期环境并加载 60FPS 光流插帧。
 - **全自动默认关联**：
-  运行安装脚本后，底层已完成注册劫持与 MRU 首选设置，**直接双击本地任意视频文件即可自动进入插帧播放**，无需额外选择。
-- **全局官方原生图标**：
-  所有视频文件的图标全部显示为官方对应的高清图标（如 MP4、MKV 原生标示），安装脚本会在结束后自动清理 Windows 图标缓存并即刻生效。
+  运行安装脚本后，底层已完成注册劫持与 MRU 首选设置，通常情况下**直接双击本地任意视频文件即可自动进入插帧播放**，无需额外寻找。
+- **官方经典黄色图标与格式徽标**：
+  - 桌面快捷方式与打开方式菜单统一展示为 **PotPlayer 官方原版经典黄色播放器图标**（`PotPlayerMini64.exe,0`），彻底摒弃通用蓝线三角或 RunAsDate 日历图标。
+  - 媒体文件关联图标分别精确映射至官方格式徽标（如 MP4、MKV、AVI 等原生文件标示）。
 - **系统设置一键指定（可选）**：
   若想在 Windows 11 设置中全局确认：按 `Win + I` 打开系统设置 -> 点击【应用】 -> 【默认应用】 -> 搜索 `PotPlayer` -> 点击右上角【设为默认值】即可一键接管全部多媒体扩展名。
 
@@ -129,7 +149,20 @@ PotPlayer_GreenPackage/
 
 ---
 
+## 📝 更新日志 (Changelog)
+
+### v2.0 (2026-09-24)
+- **[官方原生图标对齐]**：桌面快捷方式与 Windows 打开方式列表图标统一锁定为 PotPlayer 官方经典黄色圆角方块图标（`PotPlayerMini64.exe,0`），彻底摒弃通用蓝线三角形与 RunAsDate 日历图标。
+- **[默认应用与打开方式友好命名]**：全面配置 Windows `Capabilities` 与 `RegisteredApplications` 认证，右键菜单及系统默认应用识别为标准中文名称 `PotPlayer (插帧免续期版)`。
+- **[动态相对时间欺骗架构]**：时间伪装算法由固定绝对日期升级为 `/movetime Hours:-17520` 相对时间偏移机制，时钟随系统自然流逝，彻底打破 StarForce 2026 年硬边界并根除“时钟倒退检测”锁死。
+- **[后台静默全自动续期]**：内置独立维护脚本 `AutoReset_Dmitri.ps1`，注册 Windows 任务计划程序 `DmitriRender_AutoReset`（每 20 天自动执行），实现终身免人工维护与自动签发。
+- **[4K 10-bit HDR 色彩绿屏根治]**：调优硬件解码预设，强制启用 `D3D11 Copy-Back` 显存直转 NV12，彻底解决 DmitriRender 渲染高位深 HEVC/HDR 视频时的半边绿屏与色彩错乱。
+- **[状态自检与核验命令]**：集成计划任务运行状态核验指令与 DirectShow 滤镜链 OSD 自检说明，方便排查运行状态。
+
+---
+
 ## ⚖️ 免责声明 (Disclaimer)
 
 本项目仅用于技术交流与个人多媒体调优测试。涉及的第三方商业/闭源组件（DmitriRender、PotPlayer、LAV Filters、madVR）版权均归各自原始著作权人所有。请支持正版软件。
+
 
