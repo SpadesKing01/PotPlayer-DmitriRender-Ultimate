@@ -20,6 +20,11 @@
    - 【必须选择】：列表中默认第一个【RunAsDate】（或【PotPlayer (插帧免续期版)】），并勾选【始终使用此应用打开】。
    - 【原因解释】：RunAsDate 是外层动态时间守护器，通过它才能带 -17520h 保护参数启动 PotPlayer；切勿直接选裸 PotPlayerMini64.exe。
 
+【状态核验方法】
+1. 核验计划任务：按 Win+R 输入 taskschd.msc 打开任务计划程序，点击“任务计划程序库”，查看 DmitriRender_AutoReset 状态是否为“准备就绪”。
+   （命令行方式：schtasks /Query /TN "DmitriRender_AutoReset" /FO LIST）
+2. 核验插帧效果：播放视频时按 Tab 键，查看输出帧率是否达到 60fps（或更高），且滤镜中包含 DmitriRender。
+
 【卸载方法】
 如果需要清理或更换目录，右键单击【一键彻底卸载.bat】，以管理员身份运行即可完整清理。
 
