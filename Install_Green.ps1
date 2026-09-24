@@ -46,11 +46,19 @@ if (Test-Path $desktopIni) {
 }
 
 # 3. Register DirectShow Filters
-Write-Host "[3/7] 正在注册 DirectShow 滤镜 (DmitriRender + LAV Filters)..." -ForegroundColor Yellow
+Write-Host "[3/7] 正在注册 DirectShow 滤镜 (DmitriRender + LAV Filters + madVR)..." -ForegroundColor Yellow
 & regsvr32.exe /s "$appDataDmitri\x64\dmitriRender.dll"
 & regsvr32.exe /s "$lavX64\LAVAudio.ax"
 & regsvr32.exe /s "$lavX64\LAVVideo.ax"
-& regsvr32.exe /s "$lavX64\LAVSplitter.ax"`nif (Test-Path "$potDir\madVR\madVR64.ax") { & regsvr32.exe /s "$potDir\madVR\madVR64.ax" }
+& regsvr32.exe /s "$lavX64\LAVSplitter.ax"
+
+$madDir = Join-Path $potDir "madVR"
+if (Test-Path (Join-Path $madDir "madVR64.ax")) {
+    Push-Location $madDir
+    & regsvr32.exe /s "madVR.ax"
+    & regsvr32.exe /s "madVR64.ax"
+    Pop-Location
+}
 
 # 4. Import PotPlayer registry configuration
 Write-Host "[4/7] 正在应用播放器预设配置..." -ForegroundColor Yellow

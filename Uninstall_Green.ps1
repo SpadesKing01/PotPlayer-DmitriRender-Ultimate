@@ -27,7 +27,14 @@ if (Test-Path "$appDataDmitri\x64\dmitriRender.dll") {
 if (Test-Path "$lavX64\LAVAudio.ax") {
     & regsvr32.exe /u /s "$lavX64\LAVAudio.ax"
     & regsvr32.exe /u /s "$lavX64\LAVVideo.ax"
-    & regsvr32.exe /u /s "$lavX64\LAVSplitter.ax"`n}`nif (Test-Path "$potDir\madVR\madVR64.ax") { & regsvr32.exe /u /s "$potDir\madVR\madVR64.ax"
+    & regsvr32.exe /u /s "$lavX64\LAVSplitter.ax"
+}
+$madDir = Join-Path $potDir "madVR"
+if (Test-Path (Join-Path $madDir "madVR64.ax")) {
+    Push-Location $madDir
+    & regsvr32.exe /u /s "madVR.ax"
+    & regsvr32.exe /u /s "madVR64.ax"
+    Pop-Location
 }
 
 # 4. Remove file associations and Desktop shortcut
