@@ -99,9 +99,9 @@ if (Test-Path $patchSrc) {
 }
 
 # 6. Setup Background Auto-Reset Scheduled Task
-Write-Host "[6/7] 正在配置后台静默自动续期计划任务 (每20天自动维护)..." -ForegroundColor Yellow
+Write-Host "[6/7] 正在配置后台静默自动续期计划任务 (每20天下午15:00自动维护)..." -ForegroundColor Yellow
 & schtasks.exe /Delete /TN "DmitriRender_AutoReset" /F 2>$null | Out-Null
-& schtasks.exe /Create /SC DAILY /MO 20 /TN "DmitriRender_AutoReset" /TR "powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \`"$autoResetPs1\`"" /F | Out-Null
+& schtasks.exe /Create /SC DAILY /MO 20 /ST 15:00 /TN "DmitriRender_AutoReset" /TR "powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File \`"$autoResetPs1\`"" /F | Out-Null
 try {
     $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
     Set-ScheduledTask -TaskName "DmitriRender_AutoReset" -Settings $settings -ErrorAction SilentlyContinue | Out-Null
@@ -215,6 +215,6 @@ Write-Host "  安装完成！PotPlayer 绿化版已就绪。" -ForegroundColor G
 Write-Host "  - 默认视频播放器: 已关联 20 种媒体格式" -ForegroundColor Green
 Write-Host "  - 播放器图标: 官方高清矢量图标已全局生效 (无 RunAsDate 图标)" -ForegroundColor Green
 Write-Host "  - 动态时间欺骗: -17520小时 (免续期)" -ForegroundColor Green
-Write-Host "  - 后台静默续期任务: DmitriRender_AutoReset (每20天自动维护)" -ForegroundColor Green
+Write-Host "  - 后台静默续期任务: DmitriRender_AutoReset (每20天下午15:00自动维护)" -ForegroundColor Green
 Write-Host "  - DmitriRender 插帧 + 去水印: 已生效" -ForegroundColor Green
 Write-Host "========================================================" -ForegroundColor Green

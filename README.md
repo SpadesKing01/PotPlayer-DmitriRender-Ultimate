@@ -35,7 +35,7 @@
    - **时间随系统时钟同步向前流逝**，彻底避免静态死时间导致的 StarForce “检测到时钟倒流作弊” 致命锁死错误。
 2. **后台静默续期计划任务**：
    - 内置 `AutoReset_Dmitri.ps1` 便携脚本与 Windows 计划任务 `DmitriRender_AutoReset`。
-   - 每 20 天在后台自动静默清理过期的试用注册表与时间戳文件，重新签发 30 天试用期，实现完全无感“一劳永逸”。
+   - 每 20 天下午 15:00 在后台自动静默清理过期的试用注册表与时间戳文件，重新签发 30 天试用期，实现完全无感“一劳永逸”。
 3. **试用跑动水印完全消除**：
    - 自动部署 `version.dll` 专用内存劫持补丁，彻底屏蔽画面右下角 DmitriRender 跑动水印。
 4. **4K 10-bit HEVC 绿屏/色彩异常修复**：
@@ -87,7 +87,7 @@ PotPlayer_GreenPackage/
 3. 注册 64 位 LAV Filters（音频/视频/分离器）及 madVR；
 4. 导入经过全方位调优的播放器预设参数（硬件硬解、音轨优先、OSD禁用）；
 5. 初始化时间欺骗环境并部署免水印补丁；
-6. 创建 Windows 后台静默续期任务（每 20 天自动维护）；
+6. 创建 Windows 后台静默续期任务（每 20 天下午 15:00 自动维护）；
 7. 写入 Windows 默认媒体播放器能力集（Capabilities）并绑定 20 种常用格式；
 8. 全局锁定 PotPlayer 官方高清图标并自动广播刷新 Explorer 缓存。
 
@@ -118,7 +118,7 @@ PotPlayer_GreenPackage/
   schtasks /Query /TN "DmitriRender_AutoReset" /FO LIST
   ```
 - **图形化界面方式**：
-  按快捷键 `Win + R`，输入 `taskschd.msc` 回车打开【任务计划程序】。点击左侧【任务计划程序库】，在列表中找到 **`DmitriRender_AutoReset`**，确认其状态为“准备就绪”，触发器为“每 20 天”。
+  按快捷键 `Win + R`，输入 `taskschd.msc` 回车打开【任务计划程序】。点击左侧【任务计划程序库】，在列表中找到 **`DmitriRender_AutoReset`**，确认其状态为“准备就绪”，触发器为“每 20 天 15:00”。
 
 ### 2. 验证插帧与解码器运行状态
 播放任意视频时，按下键盘 **`Tab`** 键（或 `Ctrl + F1`）调出播放信息 OSD 检查：

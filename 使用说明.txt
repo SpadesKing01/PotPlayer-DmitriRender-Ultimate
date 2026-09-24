@@ -5,7 +5,7 @@
 【特点与集成内容】
 1. DmitriRender 5.0.0.1 64位光流插帧核心，画质平滑流畅。
 2. 动态时间偏移补丁 (RunAsDate -17520小时)：彻底规避 2026 年 StarForce 锁死与时间倒流检测。
-3. 后台静默续期任务 (DmitriRender_AutoReset)：Windows 计划任务每20天自动清理维护，无需人工干预。
+3. 后台静默续期任务 (DmitriRender_AutoReset)：Windows 计划任务每20天下午15:00自动清理维护，无需人工干预。
 4. 去除 DmitriRender 试用期右下角跑动水印 (version.dll 劫持补丁)。
 5. 解决 4K 10-bit HEVC 绿屏/色彩异常：内置 D3D11 Copy-Back 硬件解码 NV12 转换。
 6. 集成并优先使用 LAV Audio Decoder：完美支持 EAC3、TrueHD、Atmos、DTS-HD 高规格音轨。
@@ -20,7 +20,7 @@
    - 选择列表中带有黄色经典播放器图标的【PotPlayer】，并勾选【始终使用此应用打开】。
 
 【状态核验方法】
-1. 核验计划任务：按 Win+R 输入 taskschd.msc 打开任务计划程序，点击“任务计划程序库”，查看 DmitriRender_AutoReset 状态是否为“准备就绪”。
+1. 核验计划任务：按 Win+R 输入 taskschd.msc 打开任务计划程序，点击“任务计划程序库”，查看 DmitriRender_AutoReset 状态是否为“准备就绪”，触发器为“每20天 15:00”。
    （命令行方式：schtasks /Query /TN "DmitriRender_AutoReset" /FO LIST）
 2. 核验插帧效果：播放视频时按 Tab 键，查看输出帧率是否达到 60fps（或更高），且滤镜中包含 DmitriRender。
 

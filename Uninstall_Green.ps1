@@ -19,6 +19,7 @@ Get-Process | Where-Object { $_.ProcessName -match "PotPlayer|pcnsl|drtm" } | St
 Write-Host "[2/5] 正在移除后台自动续期计划任务..." -ForegroundColor Yellow
 & schtasks.exe /Delete /TN "DmitriRender_AutoReset" /F 2>$null | Out-Null
 Unregister-ScheduledTask -TaskName "DmitriRender_AutoReset" -Confirm:$false -ErrorAction SilentlyContinue
+Write-Host "    已彻底清理计划任务: DmitriRender_AutoReset" -ForegroundColor Green
 
 # 3. Unregister DirectShow filters
 Write-Host "[3/5] 正在反注册 DirectShow 滤镜..." -ForegroundColor Yellow

@@ -35,7 +35,7 @@ Completely overcomes DmitriRender StarForce expiration locks, 2026 calendar hard
    - **Time flows synchronously with system clock**, eliminating StarForce "clock rollback detection" fatal errors caused by static fixed dates.
 2. **Silent Automated Background License Reset**:
    - Built-in `AutoReset_Dmitri.ps1` script paired with Windows Task Scheduler task `DmitriRender_AutoReset`.
-   - Automatically and silently clears trial registry keys and timestamps every 20 days to re-issue a fresh 30-day window without user intervention.
+   - Automatically and silently clears trial registry keys and timestamps every 20 days at 15:00 to re-issue a fresh 30-day window without user intervention.
 3. **Floating Watermark Elimination**:
    - Deploys `version.dll` memory interception module, suppressing the floating trial watermark in the lower-right corner.
 4. **4K 10-bit HEVC Green Screen Fix**:
@@ -86,7 +86,7 @@ The script will automatically perform:
 3. Register 64-bit LAV Filters (Audio/Video/Splitter) and madVR;
 4. Import performance-tuned registry settings (hardware decode, audio bitstream, OSD);
 5. Initialize time-spoofing environment and watermark bypass;
-6. Create Windows background maintenance task `DmitriRender_AutoReset` (executing every 20 days);
+6. Create Windows background maintenance task `DmitriRender_AutoReset` (executing every 20 days at 15:00);
 7. Register Windows Default App capabilities for 20 common media formats;
 8. Lock official yellow PotPlayer icons and refresh Windows Explorer icon cache.
 
@@ -114,7 +114,7 @@ After running 【一键绿化安装.bat】, verify the installation state:
   ```
   If status shows `Ready`, the automated reset task is armed and active.
 - **Task Scheduler GUI**:
-  Press `Win + R`, type `taskschd.msc` and hit Enter. Navigate to `Task Scheduler Library` -> find `DmitriRender_AutoReset`. Verify status is `Ready` with trigger `Every 20 days`.
+  Press `Win + R`, type `taskschd.msc` and hit Enter. Navigate to `Task Scheduler Library` -> find `DmitriRender_AutoReset`. Verify status is `Ready` with trigger `Every 20 days at 15:00`.
 
 ### 2. Check Frame Interpolation & Decoder Status
 While playing any video, press **`Tab`** (or `Ctrl + F1`) on your keyboard to reveal the playback OSD:
