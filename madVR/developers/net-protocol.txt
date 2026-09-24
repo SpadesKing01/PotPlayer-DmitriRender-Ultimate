@@ -1,0 +1,249 @@
+================================================================================
+(A) how to find madVR in the network
+================================================================================
+
+1. introduction
+---------------
+Every madVR instance and every madVR controller starts by creating various
+listen sockets (3 connection listen sockets, 3 broadcast sockets, 1 multicast).
+After that, a broadcast message is sent to all local subnets and a multicast
+message is sent, too. These broad/multicasts announce on the network that a new
+madVR instance/controller was just started. If there are any madVR instances
+or controllers already running on the LAN, they will receive those broadcast or
+multicast messages and react by trying to make a socket TCP/IP connection to
+the new madVR instance/controller. We're using both broadcasts and multicasts
+because some routers block broadcasts but allow multicasts, while other routers
+do it the other way round. This whole logic results in that all madVR instances
+and receivers automatically make TCP/IP connections to each other.
+
+2. create connection listen sockets
+-----------------------------------
+See "madAutoNet.Listen()".
+See "madNetTools.Socket_CreateQueue(port, '', nil);".
+Opens a normal TCP/IP (SOCK_STREAM) listen socket.
+The listen socket accepts all incoming connections.
+A listen socket is opened for the following 3 ports:
+
+const
+  ListenPort1 = 37612;
+  ListenPort2 = 43219;
+  ListenPort3 = 47815;
+
+3. create broadcast listen sockets
+-----------------------------------
+See "madAutoNet.Listen()".
+See "madNetTools.Socket_CreateQueue(port, '', broadcastCallback);".
+Opens a UDP (SOCK_DGRAM) broadcast socket.
+Don't forget to activate SO_REUSEADDR and SO_BROADCAST.
+A broadcast socket is opened for the following 3 ports:
+
+const
+  BroadPort1 = 39568;
+  BroadPort2 = 41513;
+  BroadPort3 = 45817;
+
+4. create multicast listen socket
+---------------------------------
+See "madAutoNet.Listen()".
+See "madNetTools.Socket_CreateQueue(port:34761, '235.117.220.191', broadcastCallback);".
+Opens a UDP (SOCK_DGRAM) multicast socket.
+Don't forget to activate SO_REUSEADDR, IP_MULTICAST_TTL and IP_ADD_MEMBERSHIP.
+
+5. receive & process incoming broad/multicasts
+----------------------------------------------
+See "madAutoNet.BroadCallback()".
+Whenever a broad/multicast is received, the receiver automatically tries to
+connect to the sender via TCP/IP. A connection is tried to all 3 ports (see
+"ListenPort1/2/3" above).
+
+6. announcement on the network
+------------------------------
+See "madAutoNet.AutoNet_Announce()".
+As the last step of the network protocol initialization process, every new
+madVR instance and controller announces itself on the network by sending a
+broadcast to all 3 broadcast ports of all local subnets and by posting a
+multicast.
+
+================================================================================
+(B) low level data package format
+================================================================================
+
+Every data packet sent through the simple TCP/IP sockets created by section (A)
+has the following structure:
+
+type
+  TSocketPacket = packed record
+    magic : dword;  // '.mad' = $2E64616D
+    len   : integer;
+    crc   : dword;
+    data  : array [?] of byte;
+  end;
+
+The CRC is a simple CRC32 algorithm applied only to the first 8 bytes of the
+structure, to confirm that the length of the package is not corrupted.
+
+================================================================================
+(C) high level connection approval
+================================================================================
+
+It is possible that the network connection logic explained in (A) results in
+duplicate connections. In order to avoid that, every connection has a "master"
+and a "slave". The master is always the one with the higher IP address. If the
+IP address is identical, the master is the one with the higher process ID. The
+master is responsible for making sure that duplicate connections are closed.
+A connection made by logic (A) is not considered "approved" until the master
+has decided that the connection is not a duplicate. The slave side of the
+connection considers the connection to be "not ready yet" until the slave
+receives a "confirm" command from the master through the connection socket.
+
+================================================================================
+(D) high level command + parameter structure
+================================================================================
+
+Multiple mad* DirectShow filters can share one socket connection. Which means
+that every data package must contain identification information about who
+exactly sent the command. The high level command structure looks like this:
+
+[processId][module][commandNo][sizeOfComponent][component][instance][sizeOfCommand][command][sizeOfParams][params]
+
+type
+  THighLevelCommandPacket = packed record
+    processId       : dword;
+    module          : int64;  // module/dll handle
+    commandNo       : dword;  // increasing number, starting with 1
+    sizeOfComponent : dword;
+    component       : array [sizeOfComponent] of char;  // e.g. "madVR"
+    instance        : int64;
+    sizeOfCommand   : dword;
+    command         : array [sizeOfCommand] of char;  // always clear text, e.g. "seek"
+    sizeOfParams    : dword;
+    params          : array [sizeOfParams] of char;  // can be clear text, or binary data
+  end;
+
+Example:
+#a0#0#0#0 + #0#0#0#40#0#0#0#0 + #1#0#0#0 + #5#0#0#0 + 'madVR' + #0#0#0#8#7b#0#0#0 + #4#0#0#0 + 'stop' + #0#0#0#0;
+
+================================================================================
+(E) special commands
+================================================================================
+
+"confirm"
+The master confirms a connection to the client. No parameters.
+
+"hello" - with empty component string
+Everytime a connection is made through logic (A), both sides of the connection
+immediately must send a "hello" information package, which contains a selection
+of information values, e.g. operating system, user name, etc.
+
+"hello" - with component set (e.g. to "madVR")
+A mad* DirectShow filter must announce itself by sending a "hello" package with
+additional information specific to the DirectShow filter. E.g. madVR sends
+information about the monitor and graphis card etc.
+
+"reply"
+The receiver of a command always replies to the sender. The reply is matched to
+the original command through the "commandNo". Replies are not sent for the
+special commands listed in this section.
+
+"store:..." - e.g. "store:chapters" or "store:streams"
+If any command is prepended with a "store:" string, the command is not to be
+sent directly to the receiver, but to be stored in a data storage facility. The
+receiver can later manually request stored information at any given point in
+time. This feature is used e.g. by madVR to send chapter and audio/subtitle
+stream information.
+
+"bye"
+Sent by a madVR instance or controller before closing down.
+
+================================================================================
+(F) "hello" packet structure
+================================================================================
+
+The "hello" information is stored as a Unicode string (2 bytes per char). It
+consists of a list of properties in the following form:
+
+"propertyName=properyValue"
+
+A hello packet can have any number of properties (0..infinite). The properties
+are separated from each other by a unicode "tab" character (#9). Here's an
+example of a valid hello packet:
+
+"computerName=HTPC"#9
+"userName=Jack"#9
+"os=Windows 7"
+
+================================================================================
+(G) current basic connection "hello" properties
+================================================================================
+
+(1) "computerName"    // "HTPC"
+(2) "userName"        // "Jack"
+(3) "os"              // "Windows 7"
+(4) "exeFile"         // "C:\Program Files\MPC HC\mplayerc.exe"
+(5) "exeVersion"      // "1.1300.0.0"
+(6) "exeDescr"        // "Media Player Classic - Home Cinema"
+(7) "exeIcon"         // binary data
+
+================================================================================
+(H) current madVR "hello" properties
+================================================================================
+
+(1) "mvrVersion"      // "0.30.0.0"
+(2) "gpuName"         // "ATI Radeon 3850"
+(3) "monitorName"     // "JVC HD350"
+
+================================================================================
+(I) list of supported commands by madVR v0.30
+================================================================================
+
+The following list has the form:
+   "command name, parameter description, reply description"
+
+(1) GetSettings                          binary settings data
+(2) SetSettings   binary settings data
+(3) PlayPause
+(4) Stop
+(5) Exit
+(6) Seek          +seconds
+(7) Seek          -seconds
+(8) Seek          runtimeInSeconds
+(9) SelectTrack   trackIndex
+
+================================================================================
+(J) chapter information sent by madVR v0.30
+================================================================================
+
+madVR v0.30 sends chapter information as "store:Chapters". The format of this
+information is as follows:
+
+type
+  TChapterInfo = packed record
+    chapterCount   : integer;
+    times          : array [chapterCount] of double;   // runtime in seconds
+    nameLenInChars : array [chapterCount] of integer;
+    name           : array [chapterCount] of array [nameLen[index]] of wideChar;
+  end;
+
+================================================================================
+(K) stream information sent by madVR v0.30
+================================================================================
+
+madVR v0.30 sends stream information as "store:Streams". More information about
+the format properties see MS documentation about "IAMStreamSelect::Info()":
+
+http://msdn.microsoft.com/en-us/library/dd319796%28v=VS.85%29.aspx
+
+The format of the madVR stream information is as follows:
+
+type
+  TStreamInfo = packed record
+    streamCount    : integer;
+    mediaTypes     : array [streamCount] of AM_MEDIA_TYPE;
+    flags          : array [streamCount] of dword;
+    lcid           : array [streamCount] of dword;
+    group          : array [streamCount] of dword;
+    mtCbFormat     : array [streamCount] of integer;  // mediaType.cbFormat
+    nameLenInChars : array [streamCount] of integer;
+    mtPbFormat     : array [streamCount] of array [mtCbFormat[index]] of byte;  // mediaType.pbFormat^
+    name           : array [streamCount] of array [nameLen   [index]] of wideChar;
+  end;

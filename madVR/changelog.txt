@@ -1,0 +1,2316 @@
+v0.92.17
+* modified/simplified HDR tone mapping settings page
+* small HDR tone mapping saturation improvement
+* OSD now also shows the measured luminance of the current frame (in addition to the average)
+* fixed: render & present queues didn't always fill in Windows 10 build 1803
+* fixed: using XySubFilter sometimes resulted in black screen / freeze
+* fixed: using HDR "processing" resulted in dark and red-ish image
+* fixed: using BT.601/709 gamma curve with HDR tone mapping produced gray-ish image
+* fixed: settings dialog sometimes crashed on display mode / custom mode tab
+
+v0.92.16
+* fixed: rendering and present queues didn't fill correctly when using D3D11 for presentation
+* fixed: "crop black bars" didn't work correctly
+
+v0.92.15
+* HDR: improved overall tone mapping quality
+* HDR: added "color tweaks for fire & explosions" option
+* HDR: "restore details in compressed highlights" renamed to "highlight recovery"
+* HDR: improved "highlight recovery" algo, now uses/requires DirectCompute
+* HDR: added trade quality option "compromise on tone & gamut mapping accuracy"
+* HDR: maxCLL is now used (if valid)
+* HDR: added "hdrVideoPeak" profile variable
+* HDR: added (limited) support for HDR OSD bitmaps
+* added "report BT.2020 to display" calibration option
+* added true GPU mode info (color format, bitdepth & dynamic range) to OSD (Nvidia only)
+* fixed: low latency mode could result in judder/stuttering
+* fixed: OSD API sometimes drew stuff in the wrong position
+* fixed: madHcNet32/64.dll produced DCI-P3 3DLUTs with incorrect header
+* added undocumented "ShowHdrMode" empty file/folder option
+
+v0.92.14
+* fixed: activated HDR option "restore details in compressed highlights" broke SDR playback
+
+v0.92.13
+* added 2 new RCA quality levels, with NGU fusion support
+* if "activate RCA only if it comes for free" is active, NGU quality level isn't modified, anymore
+* improved "preserve hue" tone mapping quality
+* added "dynamic" mode for "luminance vs saturation reduction" option
+* added "dumb" tone mapping algo, optionally with color correction
+* added support for Arve custom tone mapping curves
+* added "hdrOutput" information field
+
+v0.92.12
+* added option "use reduce compression artifacts only if it comes for free"
+* added experimental "diffuse white" HDR option (mainly for projector owners)
+* improved non-hue-preserving HDR tone mapping
+* removed low quality hue preserving HDR tone mapping
+* HDR option "fix too bright & saturated pixels" is now always available
+* display peak nits edit control now accepts down to 80 Nits (formerly 120 Nits)
+* added 3dlut information to OSD (only if active)
+* fixed: RCA wasn't always run as part of NGU, even though it should
+* fixed: little OSD scaling info text glitch
+* fixed: #228: deintFps was not 24 for 720p60 decimated 6:4 cadence content (forced film)
+* fixed: #394: madvr OSD didn't resize properly when screen masking options are used
+
+v0.92.11
+* added 2 new lower "remove compression artifacts" strengths
+* slightly improved "remove compression artifacts" quality at lower strengths
+* "remove compression artifacts" now always runs as part of NGU (if possible)
+* display bitdepth now defaults to new "auto" setting (read from EDID)
+* extended "if there are big black bars, reduce bar size" option range
+* render target display is now shown in bold in the settings dialog
+* added support for "execute command line on profile switch"
+* when OS "HDR and Advanced Color" switch is active, FSE mode is disabled
+* removed "exclusive" / "windowed" mode OSD notification
+* added "(OS HDR)" vs "(NV HDR)" vs "(AMD HDR)" OSD information
+* added downscaling "LL" (Linear Light) information to OSD
+* added keyboard shortcut for opening settings dialog (default Ctrl+S)
+* added keyboard shortcut for toggling seekbar on/off
+* added keyboard shortcut for showing seekbar for 5 seconds
+* added keyboard shortcut for toggling debanding on/off vs strength
+* added file tag "detectBlackBars=on|off" or "blackBarDetection=on|off"
+* added file tag "hdr=on|off" or "transfer=hdr|sdr|2084|709"
+* added "battery" profile variable
+* added "fullscreen" profile variable, can be exclusive or windowed
+* renamed "fseMode" profile variable to "exclusive" ("fseMode" still works)
+* fixed: "display" profile variable didn't work properly
+* fixed: little "let madVR decide" chroma quadrupling bug
+* fixed: screenshots were distorted when using "crop black bars"
+* fixed: screenshots in paused state sometimes crashed madVR
+* fixed #320: make seeking to start of movie easier with FSE mode seek bar
+* fixed #336: madHcCtrl: 3DLUT file path is evaluated for remote instance
+* fixed #406: typing in "devices" profiles could jump to other pages
+* fixed #481: distorted colors with Y416 input and DXVA processing
+* added workaround for subtitle renderer crashes (XySubFilter, AssFilterMod)
+* added workaround for PotPlayer OSD render crashes
+
+v0.92.10
+* algo "remove compression artifacts" can now be run as part of NGU
+* reverted NGU Sharp back to gamma light -> slightly better anti-aliasing
+* removed NNEDI3 (based on user feedback)
+* ever so slightly improved HDR behaviour
+* default value for HDR -> SDR conversion is now set to "200 nits"
+* default value for "enable automatic fullscreen exclusive mode" is now "off"
+* default value for "use d3d11 for presentation" is now "on"
+* fixed: using multiple madVR instances at the same time could sometimes fail
+
+v0.92.9
+* added "reduce compression artifacts" quality option "high"
+
+v0.92.8
+* added 3 new "reduce compression artifacts" strength steps between 1-4
+* removed deblock option "don't reduce texture detail", wasn't useful
+* replaced old "reduce random noise" strengths 1+2 with a new strength 1
+* fixed: key for increasing "reduce random noise" strength stopped at 5
+
+v0.92.7
+* added experimental deblock option "don't reduce texture detail"
+* added experimental AdaptiveSharpen option "linear light"
+* added new lowest "reduce compression artifacts" strength
+* revisited "reduce random noise" strength levels, now from 1-12
+* updated AdaptiveSharpen to latest igv version
+
+v0.92.6:
+* fixed crash introduced in v0.92.5
+* algos "reduce compression artifacts + random noise" now faster for chroma
+* added "deblockChroma" and "denoiseChroma" file tags
+
+v0.92.5:
+* added new algorithm "reduce compression artifacts"
+* added new algorithm "reduce random noise"
+* added file name tag and keyboard shortcut support for new algorithms
+* switched to igv's AdaptiveSharpen variant
+* custom mode optimization is now available for modes not created with madVR
+* fixed: mode optimization didn't work for Nvidia (introduced in v0.92.4)
+* fixed: ProgDVB: DXVA deinterlacing didn't activate after channel switch
+* fixed: potential freeze when freeing madVR instance
+* fixed: playback trouble after switching video files (introduced in v0.92)
+* fixed: screenshot memory leak
+
+v0.92.4:
+* fixed: HDR metadata transport didn't always work with AMD GPUs
+* fixed: potential crash issue introduced in v0.92.0
+* fixed: possible rendering slowdown issue introduced in v0.92.2
+* fixed: custom mode warning windows sometimes appeared in background
+* added logging to help find why custom mode measurements aren't recorded
+* screenshotting now uses NGU High instead of Very High
+* screenshotting now has a 5 second timeout instead of 2 seconds
+* slightly modified user interface for Nvidia custom mode creation
+
+v0.92.3:
+* added extended screenshot functionality, new settings page etc
+* added "IMadVRFrameGrabber" interface for media player developers
+* added HDR support to madTPG
+* added (limited) support for cropping through the DirectShow pin info
+* slightly improved super-xbr weights
+* fixed: settings dialog (madHcCtrl) could crash for AMD users
+* fixed: Nvidia FSE HDR passthrough tweak stopped working in v0.92.2
+* fixed: D3D11 DXVA decoding: NNEDI3 chroma upscaling crashed
+* fixed: D3D11 DXVA decoding: sometimes froze for 5 seconds
+* fixed: using FSE seekbar in paused state could freeze media player
+* fixed: custom modes of secondary monitor showed primary monitor data
+* fixed: madTPG: mouse cursor could confuse the measurements
+* odd horizontal porches are punished with a higher compatibility hit now
+
+v0.92.2:
+* fixed: possible crash when stopping playback or freeing the madVR instance
+* fixed: DXVA2 decoding+downscaling produced wrong colors with HDR content
+* fixed: D3D11 DXVA decoding: crash when moving window to another monitor
+* fixed: D3D11 DXVA decoding: green screen with DX10 GPUs
+* fixed: D3D11 DXVA decoding: problems if video unexpectedly changes size
+* fixed: D3D11 DXVA decoding: detection for bad HDR metadata wasn't working
+* fixed: custom modes tab didn't show for AVR devices
+* fixed: custom modes tab didn't show when display modes was in a profile
+* fixed: D3D11 FSE mode was sometimes limited to 8bit instead of 10bit
+* fixed: HDR "let madVR decide" setting misbehaved for Intel GPUs
+* fixed: HDR metadata sent to display wasn't always correct
+* fixed: "HDR" profile bool was not set if HDR metadata was bad/unknown
+* fixed: some settings windows appeared behind a "always on top" media player
+* added support for sending MaxCLL/FALL HDR metadata (if available) to the TV
+* added "enable nvidia 3d.reg" to enable 3D playback with newer Nvidia drivers
+* if video HDR metadata is bad/missing, default HDR metadata is sent to TV now
+* when custom mode is deleted, measurements are now also deleted
+* Nvidia "try custom mode" timeout increased to 30 seconds
+
+v0.92.1:
+* fixed: depending on madVR settings, v0.92.0 crashed right at initialization
+* fixed: "display modes" were listed twice in the settings dialog
+
+v0.92.0:
+* added new "display modes" -> "custom modes" settings tab
+* added support for native D3D11 DXVA hardware decoding (needs nightly LAV)
+* added support for outputting 10bit in fullscreen windowed mode (win10)
+* added optimized "let madVR decide" HDR configuration option
+* added support for AMD's private HDR switching API
+* added workaround for make Nvidia's private HDR switching API work better
+* added full-size EDID block reading (256 bytes instead of just 128)
+* added extended EDID parsing
+* improved frame drop/repeat estimates for xx/1.001 hz modes
+* fixed: deinterlacing of P010 software decoded videos was broken
+
+v0.91.11:
+* fixed: HDR metadata via Nvidia's private API was broken in 64bit
+* added workaround for driver bug in Nvidia's private HDR API
+* improved Windows 10 HDR metadata support
+* D3D11 windowed mode now supports 10bit, if "HDR and Advanced Color" is on
+* improved AMD native 10bit DXVA decoding; drivers are still broken, though
+* downscaling after doubling now uses relaxed AR only for NGU Sharp + Standard
+
+v0.91.10:
+* improved Windows 10 HDR metadata support
+* added new option "hack Direct3D to make 24.000Hz and 60.000Hz work"
+* performance improvement with "trust DXVA" + "use D3D11 for presentation"
+* fixed: Intel GPU driver flickering bug with "use D3D11 for presentation"
+* fixed: madVR(64).ax files were larger than necessary
+* Intel: 10bit DXVA surfaces are now converted to 10bit RGB (instead of 8bit)
+
+v0.91.9:
+* added support for sending HDR metadata via Nvidia's private API
+* added support for sending HDR metadata via win10 (not tested yet)
+* fixed: processing (not converting) HDR was not handling gamut correctly
+
+v0.91.8:
+* NGU Sharp now targets middle ground between gamma and linear light
+* added NGU Standard + Soft algorithms, with direct quadrupling support
+* added true "very high" quality mode for direct quadrupling
+* modified "add grain" to produce similar output when using direct quad
+* fixed: Y416 input was handled incorrectly
+
+v0.91.7:
+* fixed: doubling twice with "normal" chroma quality resulted in weird colors
+* fixed: "downscaling after doubling" dropbox was missing an item
+
+v0.91.6:
+* added NGU Anti-Alias algorithm, intended as a potential NNEDI3 replacement
+* completely redesigned image upscaling settings page once more
+* downscaling after doubling now uses relaxed AR (instead of strict)
+* increased AdaptiveSharpen + LumaSharpen upper limits
+* fixed: up & downscaling anti-ringing checkbox was sometimes disabled
+* fixed: 3D subtitle depth was incorrect for movies with swapped eyes
+
+v0.91.5:
+* added direct 4x NGU upscalers
+
+v0.91.4:
+* redesigned "image upscaling" settings page once more
+* super-xbr image doubling is available again
+* fixed: downscaling anti-ringing checkbox was sometimes disabled
+
+v0.91.3:
+* fixed: NNEDI3 doubling could crash in certain situations
+* fixed: NGU chroma upscaling didn't allow "veryHigh"
+* fixed: SuperRes strength controls were disabled for chroma upscaling
+
+v0.91.2:
+* renamed NGU quality levels: Low -> Med, Med -> High, High -> VeryHigh
+* added a new even faster NGU "Low" variant
+* reworked chroma/image up/downscaling/doubling settings pages
+* removed NEDI and super-xbr image doubling algorithms
+* small speed improvement for NGU-Med (former NGU-Low)
+* small quality improvement for NGU-Med/High (former NGU-Low/Med)
+* settings dialog warns when SuperRes and NGU are enabled at the same time
+* pixel shader database is compressed now to save space
+
+v0.91.1:
+* added NGU "low" quality algorithm
+* "soften edges" and "add grain" now allow smaller adjustment steps
+* fixed: install batch didn't work
+* fixed: on some PCs NGU didn't activate
+* fixed: on some PCs keyboard shortcuts didn't work
+* fixed: NGU grain was static
+* "ShowRenderSteps" hack no longer slows down NGU as much as before
+* "ShowRenderSteps" hack only slows down stuff as long as the OSD is visible
+
+v0.91.0:
+* added new NGU (Next Generation Upscaling) algorithm
+* added "soften edges" + "add grain" upscaling refinements (atm only for NGU)
+* display properties can now also be profiled
+
+v0.90.24:
+* HDR: improved tone mapping algorithm
+* HDR: added gamut mapping compression (instead of clipping)
+* HDR: slightly improved luminance vs saturation reduction formula
+* HDR: added options to use an external HDR tone mapping 3dlut
+* HDR: added option to do HDR processing, but still output PQ
+* fixed: measuring HDR luminance + NNEDI3 chroma upscaling sometimes crashed
+* compiled OpenCL kernels are now stored separately for 32bit and 64bit
+* when using the "ShowRenderSteps" tweak, a smaller OSD font is used now
+
+v0.90.23:
+* updated AdaptiveSharpen to version 2016-07-10
+* custom output levels can now be adjusted in 0.25 steps
+* HDR: added option to define how to handle too bright & saturated pixels
+* fixed: HDR luminance measurements + chroma SuperRes produced green screen
+* fixed: #420: chroma was doubled despite being below scaling factor threshold
+
+v0.90.22:
+* added Shiandow's new (Cross) Bilateral chroma upscaler version
+* optimized black bar detection performance, should now also work for 4K 60p
+* removed Anti-Bloating for SuperRes, because it didn't really help
+* fixed: mixed x/y SSIM2D downscaling produced green screen
+* fixed: doubling decision was based on window size instead of video size
+* fixed: HDR peak luminance of 120/180 nits negatively affected SDR playback
+* fixed: HDR "measure each frame's peak luminance" froze with Intel/NVidia
+* fixed: HDR compressed/clipped highlights were ever so slightly too saturated
+* HDR: disabled HDR processing now disables 3dlut, color and gamma tweaks
+* HDR: improved quality for 120 and 180 nits
+* HDR: file "DisableHdrBrightnessTweak" disables 1xx nits special handling
+
+v0.90.21:
+* HDR: pixels between 0-100 nits are now left untouched (if possible)
+* HDR: improved desaturation algorithms to reduce hue shift even further
+* HDR: added option to choose between clipping and tone mapping
+* HDR: added option for hue preservation quality
+* HDR: added option to restore detail in compressed regions
+* HDR: added option to measure each video frame's peak luminance
+* HDR: added option to completely disable HDR processing
+* HDR: added workaround for files with invalid metadata
+* fixed: supersampling + 2D SSIM sometimes produced "green" video
+
+v0.90.20:
+* tweaked deringing algorithm some more
+* added workaround for weird crash with latest AMD beta drivers
+
+v0.90.19:
+* fixed: image doubling was sometimes activated although it shouldn't
+* deringing strength was slightly increased
+* deringing artifacts were slightly reduced
+* deringing now adds some grain to deringed image areas
+
+v0.90.18:
+* added new deringing algorithm
+* added dering key shortcut and file name tag ("dering(ing)=on/off/half/full")
+* fixed: upscaling refinement wasn't always active when doing supersampling
+* fixed: Jinc upscaling was replaced by Lanczos3 when upscaling in only X or Y
+* fixed: some graphical corruption when combining NNEDI3 + SSIM2D + Anti-Bloat
+* fixed: image was too bright with linear light down- and sigmoidal upscaling
+* fixed: sometimes HDR SMPTE 2086 metadata got lost
+
+v0.90.17:
+* added a couple of image doubling super-xbr anti-bloating options
+* fixed: "relaxed" vs "strict" option wasn't properly hidden for upscaling
+
+v0.90.16:
+* added adjustable anti-bloating filter for sharpening
+* added adjustable anti-bloating filter for SSIM downscaling
+* added adjustable anti-bloating filter for SuperRes
+* added anti-ringing filter for SuperRes
+* added Hyllian's super-xbr anti-ringing (for image doubling)
+* reworked super-xbr chroma upscaling anti-ringing algorithms
+* improved sharpen anti-ringing filter
+* sharpen anti-ringing filter now also includes AdaptiveSharpen
+* changed SSIM anti-ringing method
+* added "relaxed" vs "strict (soft)" option for downscale anti-ringing
+* "crispen edges" now tries to avoid amplifying grain & noise
+* reduced some "crispen edges" aliasing problems
+* added separate image doubling supersampling option
+* added trade quality option "scale chroma separately if it saves performance"
+* increased AdaptiveSharpen max value from 1.5 to 3.0
+* increased "thin edges" max value from 4.0 to 8.0
+* previously optional DX11 "alternative glitch handling mode" is now always on
+* multiple profile groups can now share the same keyboard shortcut
+* double clicking tray icon now opens "best" settings instead of always local
+* fixed: Jinc/SSIM 2D downscaling was sometimes activated when not needed
+* fixed: 4-taps Spline was broken
+* fixed: some problems with 3D side-by-side and line/column alternative
+* fixed: 10bit content could make DXVA scaling fail
+* fixed: bitmap subtitles were not always moved up when cropping black bars
+* fixed: when downscaling, some chroma algos were used although they shouldn't
+* fixed: sometimes media player froze during DVD playback
+* fixed: source black/white adjustments + gamma processing: wrong order
+* fixed: rare shutdown crash when using native DXVA decoding
+* fixed: OSD bug when playing BT.709 HDR content
+
+v0.90.15:
+* fixed: "creating shader file failed" (introduced in v0.90.14)
+
+v0.90.14:
+* fixed: using NNEDI3 sometimes resulted in black screen or crash
+* fixed: 3D playback resulted in stuttering after about 1 hour of playback
+* fixed: non-frame-packed 3D had scaling errors when using odd window sizes
+* small performance improvement for non-frame-packed 3D rendering
+* log file now never exceeds 512MB space, old log data is discarded if needed
+
+v0.90.13:
+* added support for finding the right 3D depth for the active subtitle track
+* added "use alternative glitch handling mode" option for D3D11 presentation
+* added a workaround for glitch problems with shaky 3D GPU drivers
+* fixed: downscaling sometimes crashed, when not using SSIM
+* fixed: Intel/NVidia always used DXVA scaling when DXVA deint/decode was used
+* fixed: SSIM AR eventually left some resources open
+
+v0.90.12:
+* fixed: OSD and subtitles went black when using error diffusion
+* fixed: subtitle depth was always set to 4, even for 2D subtitles
+
+v0.90.11:
+* added support for receiving 3D subtitle depth from splitter
+* added support for rendering subtitles and OSD at a specific 3D depth
+* added ISubRenderCallback4 interface to allow ISR to render 3D subtitles
+* downscaling anti-ringing filter is now much more agressive
+* removed integrated anti-ringing filter from "crispen/sharpen edges"
+* added optional external anti-ringing filter for ringing sharpening algos
+* re-added experimental "linear light" option for "crispen edges"
+* image doubling can now be forced on (if no scaling is done otherwise)
+* added 25%, 50%, 75%, 100% strength option to SSIM downscaling
+* fixed: MPC-HC ISR subtitles didn't work in 3D mode
+* fixed: 3D rendering with Bilinear downscaling wasn't really using Bilinear
+
+v0.90.10:
+* added support for Jinc (AR) downscaling
+* added support for SSIM 1D vs. 2D downscaling
+* added a couple of SSIM performance improvements
+* added support for reading 3D eye order information from splitter/decoder
+* fixed: bitmap subtitles (DVD/Blu-Ray) were not always properly downscaled
+* fixed: DXVA deint + SSIM downscaling could result in bad image quality
+* fixed: memory leak (maybe)
+
+v0.90.9:
+* slightly improved SSIM quality (even stronger detail reconstruction)
+* removed SSimDetailed option, now SSimClean is always used
+* removed "use 1.6 gamma instead of 2.2" option
+* fixed: moving media player to another monitor resulted in paused playback
+* fixed: rendering eventually left some D3D interfaces open
+* fixed: madVR shutdown memory leak
+* fixed: some problems with live TV (detected by DVBViewer devs)
+* fixed: 1080p23 was forced even when not using "auto" (frame packing)
+
+v0.90.8
+* fixed: downscaling "a lot" on some GPUs/drivers produced nearest neighbor
+* fixed: NNEDI3 doubling + SSIM downscaling could result in green tint
+
+v0.90.7
+* fixed: banding when using linear light downscaling (introduced in v0.90.5)
+* fixed: some problems when moving madVR to a different monitor
+* fixed: OSD display bug when using different scaling algos for X and Y
+
+v0.90.6
+* fixed: linear light SuperRes processing got broken in v0.90.5
+* fixed: SuperRes chroma processing was broken in certain situations
+
+v0.90.5
+* fixed: some SSIM downscaling related bugs
+* added SSIM "detailed" and "clean" variants
+* added Bicubic "sharpness: 125" option
+* added "use 1.6 gamma instead of 2.2" option to linear light downscaling
+* improved linear/sigmoidal light up and down scaling performance
+* improved downscaling performance when using linear light
+* SSIM downscaling can now also be used after image doubling
+* fixed: settings dialog sometimes forget to remember Bicubic150 being set
+
+v0.90.4
+* added Bicubic "sharpness: 150" option (useful for downscaling)
+* added Shiandow's SSIM downscaling algorithm
+* optimized Direct3D initialization order for 3D playback
+* rendering no longer waits for OpenCL or DirectCompute to initialize
+* fixed: AMD x64 GPU driver crash (added a workaround, not my fault!)
+* fixed: interlaced output resulted in wrong refresh rate detected
+* fixed: switching windowed -> FSE with D3D11 could result in black screen
+* fixed: screenshots with "use a separate device for DXVA" sometimes failed
+* fixed: incoming 4:2:2 content with odd video resolution crashed
+* fixed: minor timing issue with D3D11 presentation
+* fixed: OSD stopped working when no new frames came from decoder
+* fixed: one potential settings dialog crash
+* added IMadVRCommand::SendCommandDouble("keepLastFrameOnStop")
+* added IMadVRCommand::SendCommandDouble("emptyQueue")
+* last video frame is now remembered for 2 seconds when stopping graph
+* added "EC_VIDEO_SIZE_CHANGED" information to "mvrInterfaces.h"
+
+v0.90.3
+* frame packed 3D: display mode is now always changed to 1080p23
+* frame packed 3D: smooth motion FRC is now always off
+* 3D: side-by-side quality is improved (proper scaling instead of Bilinear)
+* 3D: added top-and-bottom, line alternative and column alternative modes
+* 3D: added "swap left / right eye" option
+* profile rules: added "3D" boolean variable
+* profile rules: added "+", "-", "*", "/", ":" math support
+* profile rules: number fields can now be used on both equation sides
+
+v0.90.2
+* fixed: directly entering 3D fullscreen exclusive mode failed
+* fixed: trying to do 10bit playback stopped 3D from working
+* fixed: D3D11 presentation sometimes got stuck (minimized, Aero Peak etc)
+* fixed: LAV reporting double frame rate was ignored
+* added 3D content information to OSD, e.g. "NV12, 8bit, 4:2:0 (3D)"
+* added 3D presentation information to OSD, e.g. "D3D11 exclusive (3D)"
+* 3D playback now always uses 1080p23 display mode
+* disabled refresh rate fix logic for 3D presentation (just to be safe)
+
+v0.90.1
+* fixed: DXVA processing was broken on some GPUs
+* fixed: DXVA upscaling option was grayed out
+* fixed: chroma SuperRes fracked up HDR colors
+* fixed: LAV reporting YCgCo was misinterpreted by madVR
+* fixed: "Reconstruction" was reported by the OSD to be "Jinc"
+
+v0.90.0:
+* added support for 3D decoders (IMediaSample3D)
+* added support for 3D frame packed playback via HDMI 1.4+ (requires win8.1+)
+* added support for native 10bit 4:2:0 DXVA decoding (+ scaling)
+* added "Reconstruction" chroma upsampling algorithm (replaces NEDI option)
+* updated SuperRes algorithm for chroma upscaling
+* replaced luma upscaling "linear light" with "sigmoidal light" option
+* sharpen edges is now ever so slightly brighter than before
+* updated AdaptiveSharpen to version 2016-01-07
+* fixed: D3D11 presentation crashed NVidia driver if 3D vision was enabled
+* if DCI-P3 3dlut isn't selected, BT.2020 3dlut is used instead (if available)
+* if BT.2020 3dlut isn't selected, DCI-P3 3dlut is used instead (if available)
+
+v0.89.19:
+* added support for display peak luminance values of 265, 180 and 120 nits
+* HDR: gamut mapping is now always on, even if calibration control is disabled
+* Ctrl+J OSD now scales font size with video/monitor size
+* fixed: DVD/Blu-Ray subs were positioned incorrectly when using DXVA scaling
+* fixed: DVD aspect ratio wasn't always shown correctly when using MPC-HC
+* fixed: gamma processing and brightness control didn't work for HDR content
+* fixed: DXVA decoding + deint -> refresh rate sometimes didn't switch
+* repeated frames are displayed (again) when smooth motion FRC is enabled
+
+v0.89.18:
+* added tone mapping support for HDR content
+* added gamut mapping support for HDR BT.2020/DCI-P3 content
+* added support for SMPTE 2084 transfer function decoding
+* added support for receiving HDR metadata from LAV Video Decoder
+* added "maximum display luminance" option to display properties page
+* added "HDR" profile variable
+* SuperRes now supports being run after every ~2x upscaling step (again)
+* improved JVC projector ip control connection reliability
+
+v0.89.17:
+* significant speedups for "sharpen edges" and "thin edges" algos
+* small quality change (hopefully improvement?) for "thin edges"
+* fixed: repeated frames were reported although smooth motion FRC was on
+
+v0.89.16:
+* fixed: occasional aspect ratio problems (introduced in v0.89.14)
+* fixed: "refine only once" doesn't affect SuperRes, anymore
+* fixed: DXVA decoding + deint -> refresh rate sometimes didn't switch
+
+v0.89.15:
+* fixed: black screen with some decoders (introduced in v0.89.14)
+* fixed: black screen with DXVA processing in some situations
+* added "superResRadius" file name tag for testing purposes
+
+v0.89.14:
+* added new "sharpen edges" algorithm
+* added new "crispen edges" algorithm (tamed FineSharp)
+* added new "thin edges" algorithm
+* added new "enhance detail" algorithm
+* removed SuperRes "radius" option (set to 0.66)
+* removed SuperRes "sharpness" option (set near to 2)
+* removed LumaSharpen "radius" option (set to 1.0)
+* removed LumaSharpen "clamp" option (set to 0.035)
+* removed "apply SuperRes first" option (set to true)
+* updated AdaptiveSharpen to 2015-11-05 (experimental) version
+* optimized "video size has changed" notifications to media player
+* optimized aspect ratio overriding API behaviour
+
+v0.89.13:
+* added support for rotation (0°, 90°, 180°, 270°) via key shortcut and API
+* videos are automatically rotated now, if the container/splitter says so
+* improved chroma quality when using DXVA on Intel (and maybe NVidia) GPUs
+* improved DXVA processing performance under specific circumstances
+* if DXVA is used, brightness, contrast, hue etc is applied by DXVA now
+* fixed a couple of DXVA processing related bugs
+* Intel/NVidia: DXVA2 image + Bilinear chroma upscaling -> DXVA chroma up
+* DVD Navigator AR has now priority over decoder / splitter / bitstream AR
+* updated AdaptiveSharpen to 2015-10-29 (experimental) version
+* added new profile rule script variables "display" and "variableAR"
+* optimized RAM consumption a bit, maybe
+* added option to not resume playback after lens memory change
+* fixed lens memory activation problem for Sony projectors
+* fixed: "runtime" profile variable didn't work properly
+
+v0.89.12:
+* added auto lens memory activation via "IP Control" for JVC & Sony projectors
+* added several new profile rule script variables
+* added IMadVRCommand::SendCommandDouble("setArOverride") support
+* when moving subtitle, margins are now relative to video height
+* fixed: memory leak introduced in v0.89.10
+* fixed: Catmull-Rom was broken since v0.89.10
+* fixed: potential cause for "old frame" flickering when using smooth motion
+* fixed: potential cause for "old frame" flickering in new windowed/FSE modes
+
+v0.89.11:
+* fixed stupid video size bug introduced in v0.89.10
+
+v0.89.10:
+* added SuperRes "sharpness" and "use linear light" options
+* optimized SuperRes performance with high "strength" values
+* modified subtitle mover to not change subtitle size, anymore
+* added "zoom control" option to move subtitles
+* added support for LAV DVD subtitle renderer
+* fixed: XySubFilter: high-res PGS with smaller-res video: wrong sub position
+* fixed: crash when LAV DVD subtitle renderer asked for a flush/clear
+* fixed: Smooth Motion + NNEDI3 + Bilinear could cause aliasing artifacts
+* fixed: #318: debanding sometimes caused black screen (once more)
+
+v0.89.9:
+* fixed: madVR crashed sometimes when using XySubFilter + Deband + Dither
+* fixed: XySubFilter text subs didn't show under some specific circumstances
+
+v0.89.8:
+* fixed: XySubFilter subtitles sometimes flickered when using smooth motion
+
+v0.89.7:
+* added support for new XySubFilter build -> full control over positioning
+* added IMadVRInfo::GetRect("seekbarRect")
+* fixed: XySubFilter subtitles sometimes only showed up after resizing video
+* fixed: #318: debanding sometimes caused black screen
+* fixed: #344: NNEDI3 doubling + smooth motion sometimes caused black screen
+
+v0.89.6:
+* updated AdaptiveSharpen to latest version
+* added support for ISubRenderCallback3 interface
+* optimized DXVA fullscreen playback performance
+* fixed: freezes when closing media player, or switching to different monitor
+* fixed: another DXVA related crash
+* fixed: subtitle positioning was sometimes incorrect with MPC-HC/MPC-BE
+* fixed: disabling desktop composition was broken
+* fixed: slow switching between two h264 TV stations with identical resolution
+* fixed: OSD scaling information was sometimes incorrect
+* fixed: "setZoomOffsetX = -1" resulted in madVR totally stopping to work
+
+v0.89.5
+* cleanup image borders can now optionally only crop black bar borders
+* implemented "move OSD and subtitles into active video area" option
+* madVR OSD now respects screen masking
+* optimized OSD APIs to allow media players to respect screen masking
+* optimized subtitle positioning for internal MPC-HC/MPC-BE subtitle renderer
+* added APIs for media players to set zoom/position modes
+* added IMadVRCommand::SendCommandInt("keyPress") support (J.River MC)
+* some render code cleanup (fully removed AMD interop hack etc)
+* fixed: one cause for shutdown crash with native DXVA decoding
+* fixed: OSD fused different luma/chroma NNEDI3 neurons into "image"
+* fixed: image enhancements "restore defaults" set LumaSharpen "clamp" wrong
+
+v0.89.4
+* debug OSD now shows black bar, source and target rect details
+* added "redraw" command so MPC-HC/MPC-BE can redraw subtitles in paused mode
+* fixed: zero target rect / window size made madVR crash
+* fixed: native DXVA accepted all formats, even when they weren't supported
+* fixed: NNEDI3 OpenCL kernel was compiled even when using super-xbr or NEDI
+* fixed: new NNEDI3 interop no longer requires win7 platform update
+* fixed: sometimes NNEDI3 chroma doubling was incorrectly disabled
+* fixed: crash when using NNEDI3 with old windowed mode render path
+* fixed: option "if black bars change pick one zoom factor" had no effect
+* fixed: two deadlock causes when switching between 576i and 1080i videos
+* fixed: "keep bars visible if they contain subtitles" = "forever" didn't work
+
+v0.89.3
+* NNEDI3/OpenCL now uses D3D11 interop instead of D3D9 interop
+* implemented most of the various missing black bar features
+* added support for device profiling
+* added vertical scrollbar to "profile auto select rules" edit field
+* added "smoothmotion" bool value for profile rules
+* fixed: sometimes video was zoomed in way too much without any reason
+* fixed: black bar detection sometimes had false positives
+* fixed: black bar detection sometimes unnecessarily dropped correct detection
+* fixed: DXVA processing sometimes broke when stopping & starting the graph
+* fixed: sub options were active even if black bar detection was off
+
+v0.89.2
+* fixed: one more media player startup crash
+* fixed: DXVA deinterlacing and black bar detection didn't like each other
+* fixed: DXVA scaling had some problems with v0.89.0 and v0.89.1
+* fixed: some media player size/pos zoom wishes were not properly applied
+
+v0.89.1
+* fixed: two startup crashes with some media players
+
+v0.89.0
+* added new device "screen config" settings page
+* added screen masking feature
+* added support for anamorphic stretch
+* added new processing "zoom control" settings page
+* added automatic detection of black bars with lots of sub options
+* fixed: DXVA deinterlacing sometimes produced "DXVA processing failed"
+* fixed: profiles: scaling factor wasn't properly reported
+* increased seek "black screen protection" to 2 seconds (formerly 1)
+
+v0.88.21
+* OSD rendering back to 0.88.16 logic, except when low latency mode is active
+* fixed: DXVA processing failed when video stream switched resolution
+* fixed: render times weren't shown correctly
+* fixed: SuperRes bigger radius values could cause artifacts
+* fixed: low latency mode sometimes wasn't turned off when it should
+
+v0.88.20
+* changed OSD rendering logic all over again
+* added SuperRes "radius" option (only for testing purposes)
+* removed SuperRes "use alternative color space" option
+* replaced SuperRes strength+passes option with a new strength option
+* added madTPG APIs "IsFseModeEnabled" and "En/DisableFseMode"
+
+v0.88.19
+* fixed: using the sharpening algos sometimes produced startup crashes
+* fixed: forced film mode sometimes produced crashes
+* fixed: weird resolution videos resulted in black screen with some old GPUs
+* optimized OSD rendering performance slightly
+* when running in a debugger, keyboard hook is not set, anymore
+
+v0.88.18
+* fixed: DXVA deinterlacing resulted in heavy flickering
+* fixed: low latency mode was always activated with some media players
+* fixed: smooth motion FRC: OSD incorrectly reported empty queues
+* fixed: crash when OpenCL wasn't working properly
+* fixed: FSE mode was sometimes activated when it shouldn't
+
+v0.88.17
+* madVR now renders in paused and stopped mode, too
+* added automatic OSD low latency logic
+* added SuperRes anti-ringing filter
+* fixed little SuperRes quality detoriation introduced in v0.88.16
+* fixed: high GPU consumption in paused mode (PotPlayer, Kodi DSPlayer)
+* all (useful) IVideoWindow APIs now work even when no pins are connected
+
+v0.88.16
+* modified SuperRes algorithm slightly (faster, less artifacts, less sharp)
+* added SuperRes "use alternative color space" option
+* replaced SuperRes "HQ downscaling" option with new "algo" multi option
+* removed SuperRes "softness" option (now always 0.00)
+* fixed: decoder sending BT.2020 decoding matrix wasn't properly detected
+
+v0.88.15
+* super-xbr image doubling AR optimization: 20% performance boost
+* super-xbr chroma upscaling now supports higher quality AR algo -> 6% slower
+* super-xbr chroma "AR" option now switches between low/high AR quality
+* modified Bilateral chroma upscaling algorithm parameters
+
+v0.88.14
+* updated to latest Shiandow SuperRes version
+* added Bilateral chroma upscaling algorithm
+* added AdaptiveSharpen to "image enhancements" and "upscaling refinement"
+* improved luma anti-ringing quality for super-xbr image doubling
+* super-xbr chroma upscaling now supports enabling/disabling anti-ringing
+* added super-xbr sharpness options of 25 and 150
+* ca. 30% performance boost for super-xbr image doubling
+* ca. 15% performance boost for super-xbr chroma upscaling
+* ca. 30% performance boost for FineSharp
+* removed "thinning" parameter from FineSharp, now always set to 0
+* added various new madTPG APIs
+
+v0.88.13
+* added super-xbr "sharpness" parameter (50, 75, 100 = default, 125)
+* big speed for super-xbr chroma upscaling
+* small speedup for super-xbr image doubling
+* FineSharp no longer uses linear light (for now)
+* added IMadVRCommand interface, replaces IMadVRSeekbar/ExclusiveModeControl
+* added IMadVRCommand::SendCommand("restoreDisplayModeNow") command
+* fixed: small logic/quality bug in super-xbr chroma upscaling
+* fixed: settings dialog always showed NNEDI3 chroma doubling to be enabled
+
+v0.88.12:
+* added super-xbr image doubling algorithm
+* added super-xbr chroma upscaling algorithm
+* added NEDI chroma upscaling algorithm
+* added workaround for one more cause of queues not filling in D3D11 FSE mode
+* removed FineSharp "mode", "repair" and "linear light" options
+* removed SuperRes "error upscaling quality" option
+* fixed: screenshots didn't always work when using DXVA scaling
+* fixed: luma quadrupling could introduce greenish tint
+* fixed: settings dialog required BT.709 3dlut slot to be filled
+* fixed: auto 3dlut slot switching didn't always work correctly
+* fixed: double clicking madTPG with D3D11 enabled -> black screen
+* fixed: custom shader "clock" parameter was not set correctly
+* fixed: ConfigureDisplayModeChanger(allowResolutionChanges = false) bug
+
+v0.88.11:
+* fixed: SuperChromaRes produced green screen when downscaling video a lot
+* fixed: at exactly 50% zoom, chroma was always repositioned using Bilinear
+* fixed: some D3D11 objects were not properly released
+* fixed: D3D11 FSE losing focus resulted in black screen
+* fixed: one more D3D11 shutdown crash
+* fixed: fixed one more OpenCL compilation problem
+* fixed: crash when downscaling a lot, with media player asking for cropping
+* fixed: SuperChromaRes produced artifacts with "use 10bit chroma/luma" buffer
+* removed Shiandow's debanding algorith
+* added workaround for one cause of queues not filling in D3D11 FSE mode
+* modified "high" debanding preset one last (?) time
+* SoftCubic skips anti-ring now (AR harmed SoftCubic more than it helped)
+
+v0.88.10:
+* fixed: some problems when using NNEDI3
+* slightly modified "high" debanding preset, once more
+
+v0.88.9:
+* optimized lots of HLSL pixel shaders -> performance improvements
+* added a dedicated downscaling render path to speed up 4K playback etc
+* removed "bad" scaling algos (Lanczos8, Jinc4, Jinc8)
+* modified "high" deband preset to also use gradiant angle analyzation
+* updated to latest Shiandow deband script
+* error diffusion now also supports 10bit output
+* modified D3D11 refresh rate behaviour
+* optimized rendering time averaging logic
+* rewrote "install.bat" and "uninstall.bat" once more
+* SMPTE 170M and SMPTE 240M are now using the SMPTE C 3dlut
+* sRGB now uses the BT.709 3dlut
+* fixed: JRiver MC20 crashed when stopping FSE 10bit playback
+
+v0.88.8:
+* updated to latest Shiandow deband script
+* fixed: D3D11 didn't activate with "frames presented in advance" set to 16
+* fixed: ConfigureDisplayModeChanger(allowResolutionChanges = false) bug
+
+v0.88.7:
+* fixed: D3D11 render queue didn't fill in Windows 7
+* fixed: FineSharp didn't like "use 10bit image buffer instead of 16bit"
+* fixed: "madVR_Load3dlutFile" ignored the attached "cal1" gamma ramps
+* updated to latest Shiandow deband script
+
+v0.88.6:
+* fixed: D3D11 rendering sometimes got stuck (e.g. when minimizing player)
+* fixed: NNEDI3 quadrupling with SuperRes didn't work properly (NVidia only)
+* fixed: refresh rate fix didn't work in 64bit
+* added D3D11 refresh rate fix (proper support for 23p vs. 24p etc)
+* added option "octuple luma/chroma resolution"
+* re-added NNEDI3 chroma doubling options
+* removed limitation to double chroma with Catmull-Rom
+* updated Shiandow deband algorithm to latest version
+* double clicking tray icon now opens the settings dialog
+
+v0.88.5:
+* fixed: image quadrupling was buggy, sometimes crashed
+* fixed: LumaSharpen strength was truncated (0.99 -> 0.00)
+
+v0.88.4:
+* fixed startup crash in Windows 7, introduced in v0.88.3
+* NNEDI3 doubling: chroma is now always upscaled with max 2 taps
+
+v0.88.3:
+* fixed another media player shutdown crash/freeze
+* LGPL issue fixed: changing "legal stuff\nnedi3ocl.cl" takes effect now
+* LGPL issue fixed: changing "legal stuff\Shiandow\*" takes effect now
+
+v0.88.2:
+* added D3D11 option "present a frame for every VSync"
+* added option to choose medium/high SuperRes error upscaling quality
+* pages "image enhancements" and "upscaling refinement" are now profileable
+* fixed: dark video in windowed mode when using error dif with 10 bit display
+* fixed: FineSharp modes 2 and 3 corrupted image quality
+* fixed: some controls (FSE seekbar, and ZoomPlayer controls) didn't work
+* fixed: corrupted render times and more when using a lot of rendering steps
+* madVR no longer disables desktop composition when D3D11 is activated
+* if DWM is disabled, when madVR starts, D3D9 is used instead of D3D11
+* if DWM is disabled while madVR renders with D3D11, madVR pauses playback
+
+v0.88.1:
+* fixed media player shutdown crash/freeze
+
+v0.88.0:
+* added Direct3D 11 presentation path
+* added support for native 10bit output
+* added NEDI image doubling option
+* added "image enhancements" settings page for source enhancements
+* added "upscaling refinement" settings page for upscaling post processing
+* added FineSharp to source enhancement and upscaling refinement
+* added LumaSharpen to source enhancement and upscaling refinement
+* added SuperRes to upscaling refinement
+* added chroma upscaling option "activate SuperRes filter"
+* added Shiandow's deband algorithm
+* removed chroma image doubling options
+* fixed some 64bit stability issues
+* fixed crash when two madVR instances had the same parent (DVBViewer BiB)
+* fixed one potential DXVA decoding freeze
+* trade quality option "lose BTB and WTW..." is disabled by default now
+* added SettingsSetBoolean("FinalizeOnWMClose") option
+* (un)install.bat now complains if you don't run them as admin
+* (un)install.bat now doesn't try to install madVR64 on a 32bit OS, anymore
+
+v0.87.21:
+* fixed: (un)install.bat now works without having to manually "run as admin"
+* fixed: active display wasn't properly set in the settings (x64)
+* added workaround for window subclassing crash (x64)
+
+v0.87.20:
+* added x64 build
+* fixed: short playback freeze, then catch up, at runtime start
+
+v0.87.19:
+* fixed: seeking sometimes froze (e.g. with Haali Splitter)
+* fixed: DXVA scaling with "use a separate device for DXVA" -> black screen
+
+v0.87.18:
+* fixed: #181: "deint" tag sometimes didn't work when using profiles
+* fixed: #277: DVD Navigator: external subtitles displayed incorrectly
+* fixed: target rects with odd widths/heights resulted in a black border
+* fixed: SettingsSetBoolean("DebugOSD") didn't take effect immediately
+* DXVA scaling is done in RGB again for Intel and NVidia
+* DXVA performance improvement under certain conditions
+* small performance improvement when movie aspect ratio doesn't match display
+* 3dlut split screen mode can now supports mouse drag & drop
+* 3dlut can now be temporarily disable (and reenabled) via keyboard shortcut
+* some reliability improvements to refresh rate calculation algorithm
+
+v0.87.17:
+* fixed: FSE seekbar didn't show, anymore
+
+v0.87.16:
+* fixed: #181: "deint" tag sometimes didn't work when using profiles
+* fixed: #267: crash when seeking with smooth motion enabled
+* fixed: #272: black screen in old windowed mode
+* fixed: #275: image freeze when switching from new path to old path window mode
+* fixed: some BT.709 video files were misdetected as BT.601
+* reintroduced the "interop hack" option
+* improved DXVA color space conversion performance again
+* added trade option "trust DXVA color & levels conversion"
+* SettingsSetBoolean("DebugOsd") now turns the debug OSD on/off
+
+v0.87.15:
+* changed DXVA scaling logic to produce proper quality with AMD drivers
+* improved DXVA color space conversion performance
+* new trade option "use DXVA chroma upscaling when doing native DXVA decoding"
+* new trade option "use DXVA chroma upscaling when doing DXVA deinterlacing"
+* new trade option "lose BTB and WTW if it improves performance"
+* added scaling algorithm information to OSD
+* added 3dlut split screen mode (can only be activated via key shortcut)
+* added a few stability fixes/workarounds
+* fixed: #033: display mode changer sometimes didn't switch to 75hz
+* fixed: #176: no image on portrait (rotated) displays
+* fixed: #199: decimation didn't work with 4:4 cadence (PAL 50p)
+* fixed: #201: decimation didn't work with 4:2:2:2 cadence
+* fixed: #203: cadence info sometimes went "unknown" in debug OSD
+* fixed: #205: XySubFilter subtitles sometimes weren't visible
+* fixed: #213: bad edit detection didn't work with 6:4 cadence (ATSC 60p)
+* fixed: #222: crash when using a large number of shaders
+* fixed: #227: Zoom Player OSD "pause" message sometimes wasn't shown
+* fixed: #230: madVR refresh rate changer caused DVD playback to break
+* fixed: #233: shared NVidia/AMD/Intel GPUs (e.g. Optimus) showed black screen
+* fixed: #254: madVR 0.87.14 sometimes crashed when using XySubFilter
+* fixed: #255: original system timer resolution wasn't restored on unload
+* fixed: #257: OSD information sometimes shows "1.#J days"
+* fixed: crash when decreasing GPU queue size
+* removed software decoders
+* removed trade option "don't use "copyback" for DXVA deinterlacing"
+* removed trade option "don't use "copyback" for DXVA decoding"
+* removed option "use OpenCL to process DXVA NV12 surfaces"
+* removed option "use alternative interop hack (not recommended, AMD only)"
+* removed option "use managed upload textures (XP only)"
+* added support for ZoomPlayer's mouse scroll zoom functionality
+* "Exclusive/Windowed" OSD messages don't overwrite other messages, anymore
+
+v0.87.14:
+* madTPG: fixed "madVR_Get/SetSelected3dlut" API
+* madTPG: added "madVR_Enable3dlut" API
+* madTPG: network search is a bit more extensive/agressive now
+* fixed: madVR network functionality didn't always take WLAN into account
+* target rect related change for DVBViewer
+
+v0.87.13:
+* madTPG: added "madVR_Find" API
+* madTPG: fixed "madVR_GetVersion" API
+* added OSD API stretch option
+
+v0.87.12:
+* fixed: v0.87.11 broke madTPG API compatability
+* madTPG: added dropdown box to allow manual gamut/3dlut selection
+* madTPG: loading a 3dlut now takes immediate effect in madTPG
+* madTPG: added API "GetVersion"
+* madTPG: added API "Get/SetSelected3dlut"
+* madTPG: number of pre-presented frames is now limited to max 3
+
+v0.87.11:
+* fixed: AR downscaling after NNEDI3 luma only upscaling produced artifacts
+* fixed: madTPG API "madVR_ConnectToIp(127.0.0.1)" sometimes didn't work
+* madTPG: added API "Connect" with various options
+* madTPG: added API "Quit" to close the connected madTPG instance
+* madTPG: added APIs "Get/SetPatternConfig" & "ShowRGBEx"
+* madTPG: added APIs "IsStayOnTopButtonPressed" & "SetStayOnTopButton"
+* madTPG: added APIs "IsUseFullscreenButtonPressed" & "SetUseFullscreenButton"
+* madTPG: added APIs "IsDisableOsdButtonPressed" & "SetDisableOsdButton"
+* madTPG: added various new 3dlut conversion and loading APIs
+* madTPG: added IP address information to title bar
+
+v0.87.10:
+* added some optimizations to reduce AMD OpenCL interop cost
+* added new windowed presentation path ("present several frames in advance")
+* added support for decimating 50p/60p movies to 25p/24p
+* added profile strings "filePath/Name/Ext", with wild char ("?", "*") support
+* fixed: #181: profile auto switching sometimes invalidated file name tags
+* fixed: #192: black flashing with Smooth Motion + NNEDI3 chroma doubling
+* fixed: #193: image corruption when up&down scale is needed at the same time
+* fixed: crash on Vista when trying to activate error diffusion
+* fixed: Intel OpenCL CPU driver sometimes crashed
+* OpenCL should now automatically prefer NVidia GPUs on Optimus laptops
+* refresh rate hack is now only installed on Windows 8 (and newer)
+* "Pause" OSD message no longer blocked
+* file "madshi.net/madVR/version.txt" lists the current version number
+* file "madshi.net/madVR/sha1.txt" lists SHA1 hash of the current "madVR.zip"
+
+v0.87.9:
+* fixed: NNEDI3 didn't work properly on AMD/Intel (introduced in v0.87.8)
+* fixed: native DXVA decoding + NNEDI3 chroma up + NVidia -> green color cast
+* fixed: #032: Smooth Motion FRC sometimes failed to activate
+* fixed: #096: Smooth Motion FRC resulted in last/only frame being hidden
+* fixed: #097: Smooth Motion FRC didn't respect "treat 25p movies as 24p"
+* fixed: #098: "Treat 25p movies as 24p" now only activates up to 25.5fps
+* fixed: #104: "Delay playback until ..." failed when toggling subtitles
+* fixed: #113: film mode key shortcut didn't enable Smooth Motion FRC
+* fixed: #124: videoLUTs were not properly restored in multi monitor setup
+* fixed: #132: Image corruption when leaving FSE with 3dlut loaded
+* fixed: #171: film mode activation with display mode change could crash
+* fixed: #178: RGB/YUV 4:4:4 with mod2 height showed black screen
+* fixed: #182: NNEDI3 chroma up neuron count wasn't properly memorized
+* fixed: #187: switching subtitles triggered a short black screen
+* fixed: #189: Smooth Motion FRC sometimes activated when not needed
+* NNEDI3 no longer offsets by 0.5 pixel if Luma needs to be resampled, anyway
+* added "HKCU\Software\madshi\madVR\OpenCL\forceVendor" override option
+* modified madLevelsTweaker GUI to make intended multi monitor usage clearer
+
+v0.87.8:
+* added workaround for NVidia OpenCL <-> D3D9 interop driver bug
+* fixed: #158: NNEDI3 chroma upscaling + DXVA deint + NVidia -> green image
+* fixed: DirectCompute rendering resources weren't properly released
+* fixed: some multi monitor problems introduced in v0.87.7
+* fixed: smooth motion frc sometimes incorrectly dropped frames
+* fixed: toggling subtitle "trade quality" option required restart
+* some DirectCompute stability improvements
+* added vendor based OpenCL device filtering
+* non-DX11-GPUs: error diffusion now falls back to ordered dithering
+* improved Windows 8.1 FSE mode refresh rate hack
+
+v0.87.7:
+* added linear light processing for ordered dithering and error diffusion
+* added "trade quality for performance" option for linear light dithering
+* fixed: #175: Banding appears if bitdepth is set to '7 bit'
+* fixed: crash in MC19 when switching videos with native DXVA decoding
+* fixed: rare overlay stability problems introduced in v0.87.5
+* random dithering doesn't round down to less than 8bit, anymore
+* "present several frames in advance = off" now auto-disables error diffusion
+* display bitdepth can be be set to as low as 1bit (just for testing)
+* added silent exception handling for Intel OpenCL initialization crashes
+* madTPG now optionally supports APL windows (gamma and linear light)
+* madTPG now has a minimum image area of 4% instead of 10%
+* madTPG now draws a 20 pixel black border around the measurement area
+* madTPG now properly supports dynamic dithering (didn't before)
+* madTPG dithering was optimized to not dither for integer test patterns
+* madTPG headers and demo projects updated
+* madVR in a media player no longer supports test patterns, only madTPG does
+
+v0.87.6:
+* fixed: #090: FSE mode switched to 23Hz instead of 24Hz in Windows 8
+* fixed: #127: crash when jumping to next video file on secondary monitor
+* fixed: #173: overlay: exiting multiple windows in same order -> black screen
+* madTPG now forces ordered dither, but you can en/disable colored & dynamic
+* added support for new subtitle API ISubRenderConsumer2::Clear()
+
+v0.87.5:
+* error diffusion now uses DirectCompute (DX11 GPU needed) instead of OpenCL
+* added fast and reasonably high quality "ordered dithering" algorithm
+* added "rendering\dithering" settings page with many new options
+* new default dithering is now ordered dithering instead of random dithering
+* madTPG now always uses monochromatic ordered dithering
+* fixed: #107: XySubFilter: reducing CPU queue size during playback -> crash
+* fixed: #112: 120fps clip resulted in 23Hz being selected instead of 60Hz
+* fixed: #119: installation resulted in "might not have installed correctly"
+* fixed: #123: XySubFilter: Nearest Neighbor/Bilinear distorted subtitles
+* fixed: #125: forced film mode with unsupported FOURCCs: graphical corruption
+* fixed: #133: XySubFilter: opaque black box when smooth motion was enabled
+* fixed: #136: when playback is stopped, madVR now always turns the video off
+* fixed: #137: Nearest Neighbor/Bilinear has problems with post-resize shaders
+* fixed: #138: smooth motion FRC flickered when using Nearest Neighbor
+* fixed: #145: DCI-P3 was using an incorrect white point
+* fixed: #155: screeshots sometimes had an added black border
+* fixed: #159: speciying DCI-P3 as the calibrated gamut -> green screen
+* fixed: #160: corruption with uncompressed 4096x2304 v210 in AVI
+* fixed: #161: YUV 4:4:4 videos with weird resolutions crashed madVR
+* fixed: #165: overlay mode restricted madVR to single player window
+* fixed: #167: dithering produced dithering noise on pure black areas
+* fixed: #169: dithering produced dithering noise on pure white areas
+* fixed: #170: Overlay mode sometimes unnecessarily cleared GPU gamma ramps
+* fixed: Overlay mode applied 3dlut and gamma ramps in wrong order
+* fixed: crash reporting didn't catch exceptions in private threads, anymore
+* fixed: crash when using XySubFilter with small GPU queue size
+* fixed: DVD navigator was not released properly by madVR
+* fixed: Run/Seek hooks also affected secondary DirectShow graphs
+* fixed: profile key shortcuts only worked for "scaling" profiles
+* fixed: full range YCbCr input produced slightly incorrect colors
+* reduced Overlay mode graphical corruption when resizing media player
+* exclusive -> windowed switch now shows a black frame instead of an old one
+* removed XySubFilter auto-loading functionality, it's now XySubFilter's job
+* disabled resolution based DCI-P3 auto detection
+* changed default luma doubling value to 32 neurons
+* display bitdepth can be be set to as low as 3bit (just for testing)
+
+v0.87.4:
+* workaround added: NNEDI3 upscaling failed/froze with newer NVidia GPUs
+* fixed: NNEDI3 chroma upscaling produced wrong colors with 10bit sources
+* got rid of some unnecessary texture sharing
+
+v0.87.3:
+* fixed: blacked out video in Windows XP
+* fixed: blacked out video when disabling "present several frames in advance"
+
+v0.87.2:
+* fixed: D3D9 device wasn't freed properly, resulting in stability problems
+* fixed: using shared NV12 surfaces resulted in DXVA performance drop
+* fixed: opening settings without connected decoder took 5 seconds
+* fixed: chroma Jinc keyboard shortcut activated NNEDI3
+* fixed: chroma NNEDI3 keyboard shortcut was not listed in the settings
+
+v0.87.1:
+* fixed: CPU consumption was unnecessarily high
+* fixed: auto profile switching didn't fully work
+* fixed: uploading was very slow, resulting in performance problems
+* fixed: chroma channels were swapped when using error diffusion with NVidia
+* fixed: some OpenCL crashes when using OpenCL 1.2 DLL with NVidia
+* fixed: smooth motion FRC produced black image in some situations
+* fixed: video mode deinterlacing was completely broken
+
+v0.87.0:
+* added debanding algorithm, based on improved version of "flash3kyuu_deband"
+* added file name tag "deband=off|low|medium|high"
+* added automatic detection for fades from/to black or white (for debanding)
+* added support for using OpenCL with NVidia, AMD and Intel GPUs
+* added DXVA surface splitting via OpenCL (only AMD and Intel GPUs)
+* added error diffusion algorithm (requires OpenCL)
+* added NNEDI3 chroma upsampling (requires OpenCL)
+* added NNEDI3 image doubling/quadrupling (requires OpenCL)
+* added flexible settings profile functionality
+* added file name tag "profile='profile name'"
+* added IMadVRSettings2 interface to enumerate settings and manage profiles
+* settings can now be edited without madVR running (only on local PC)
+* madNvLevelsTweaker -> madLevelsTweaker now also works for Intel GPUs
+* madVR doesn't dither, anymore, when a pixel doesn't need dithering
+* added Intel driver bug workaround for "use separate device for presentation"
+* added madHcNet64.dll to allow madTPG automation from 64bit calibration tools
+* added API for asking madVR about the output levels (TV, PC, custom)
+* fixed: full backbuffer queue slowed rendering down
+* fixed: madTPG sometimes didn't update to newly requested test pattern color
+* fixed: madTPG dithering produced blocking artifacts
+* fixed: when upscaling exactly 2x, AR filter wasn't active for blue channel
+* fixed: ArgyllCMS/HCFR disabling the 3dlut didn't work
+* fixed: LAV Video Decoder sending v210 produced corrupted image
+* improved frame cropping support
+* improved windowproc hook stability
+* a couple of very small pixel shader performance improvements
+* optimized madVR default settings
+* improved madVR tray icon menu looks on newer OSs
+* tags now require "tag=value" or "tag:value"; "tag value" no longer accepted
+* disabled automatic DCI-P3 detection through 2048 video width
+
+v0.86.11:
+* added import option for eeColor 3dluts (e.g. from LightSpace CMS)
+
+v0.86.10:
+* fixed: #084: occasional black frames with smooth motion
+* fixed: #115: XySubFilter: opaque black box on older GPUs
+* fixed: smooth motion FRC could artifact with bilinear scaling
+* added support for disabling XySubFilter auto-loading
+* added "madVR_GetDeviceGammaRamp" calibration test pattern API
+* when closing madTPG, original VideoLUTs gets restored at once
+
+v0.86.9:
+* fixed: madHcCtrl.exe had the wrong exe icon
+* using linear light is now default for smooth motion FRC
+* added new trade quality option "optimize subtitle quality for performance"
+* modified the time when display mode is restored when media player closes
+* win8 FSE refresh rate fix is now also applied without display mode changer
+* added API to allow more control over test pattern progress bar
+* cleaned up 3dlut and VideoLUT disable/define priorities
+* improved support for combined 3dlut/VideoLUT file format ("collink -H")
+
+v0.86.8:
+* fixed: entering FSE mode sometimes caused a delay (introduced in v0.86.7)
+* added support for specifying a separate external 3dlut for each source gamut
+* gamut conversion is now skipped if the 3dlut gamut matches the source gamut
+* madTPG: screensaver is blocked (except if it is passworded!)
+* madTPG: screen is prevented from going to sleep
+* madTPG: added "stay on top" button
+* madTPG: changed the way the "fullscreen" button works
+* madTPG: window size/state and all settings are auto saved now
+* madTPG: now works without requiring madVR to be installed
+* madTPG: fixed: crash when madVR was not installed
+
+v0.86.7:
+* added "madTPG.exe" test pattern generator for calibration purposes
+* added support for combined 3dlut/VideoLUT file format ("collink -H")
+* option "Disable GPU gamma ramps" should now work in windowed mode, too
+* fixed: #30: ZoomPlayer got stuck in 'on top' mode after leaving FSE
+* fixed: #90: wrong refresh rate (23/24, 59/60) in win8 in FSE mode
+* fixed: #91: added madVR version information to settings dialog
+* fixed: #92: shaders were not applied to XySubFilter subtitles
+* fixed: #93: overlay mode ignored ICC VideoLUTs
+* fixed: pixel shader VideoLUT implementation didn't use linear filtering
+* fixed: crash when display mode is changed externally (DXVA processing)
+* XySubFilter: improved subtitle upload performance
+* XySubFilter: optimized downscaling of bitmap based subtitles
+* XySubFilter: madVR consumer now reports "preferTvLevels = true"
+* XySubFilter: improved performance, if provider sends TV levels subtitles
+
+v0.86.6:
+* fixed: test pattern API "BlindConnect" made problems with HCFR
+* fixed: 3dlut was never applied when drawing test patterns
+* fixed: HCFR running with admin rights couldn't always connect to madVR
+* added new remote control API "madVR_SetBackground" for plasma users
+
+v0.86.5:
+* fixed: calibration test pattern colors were sometimes incorrect
+* added support for internal VideoLUT processing
+* added remote control ability for internal VideoLUT processing
+
+v0.86.4:
+* added support for drawing remote controlled calibration test patterns
+* renamed madHcNet.dll to madHcNet32.dll
+* drop/repeat estimate now works up to 240Hz
+* tray icon appears faster now
+* fixed: #81: Repeated frames count increases when video is paused
+
+v0.86.3:
+* disabled resolution based BT.2020 auto-detection (for now)
+* fixed: ZoomPlayer: cosmetical issue when pausing in FSE mode
+* fixed: #26: seeking/pausing in FSE with FRC on freezes video
+* fixed: #72: display mode restauration didn't work correctly in win8
+* fixed: #73: display mode was not restored when playback was stopped in MC18
+* fixed: #74: fullscreen <-> windowed can be slow with large CPU queue
+* fixed: #79: XySubFilter: non-color-corrected subtitles had wrong levels
+
+v0.86.2:
+* fixed: refresh rate changing didn't always work correctly in Windows 8
+* fixed: MPC-BE title bar didn't handle unicode characters correctly
+* fixed: IVideoWindow::putBorderColor() had swapped colors (RGB -> BGR)
+* fixed: #18: decoder queue sometimes exceeded limits
+* fixed: #19: blank screenshots when Smooth Motion FRC is turned on
+* fixed: #23: video didn't follow overlay window position when paused
+* fixed: #34: smooth motion FRC was sometimes incorrectly turned on
+* fixed: #35: framerate tag was not working
+* fixed: #37: when no video duration was known, seekbar was not shown
+* fixed: #42: memory leak with certain OSD elements
+* fixed: #44: GraphStudioNext "Performance Test" Crash
+* fixed: #46: XySubFilter: 3DLUT was not applied to frames with subtitles
+* fixed: #47: XySubFilter: subtitles weren't rerendered after scaling change
+* fixed: #48: XySubFilter: incorrect positioning after downscaling
+* fixed: #49: XySubFilter: incorrect PGS subtitle positions
+* fixed: #50: XySubFilter: smooth motion FRC caused subtitles flicker
+* fixed: #51: settings dialog now mentions both ReClock and VideoClock
+* fixed: #52: XySubFilter: incorrect ASS subtitle positions
+* fixed: #55: FSE seek bar resulted in inaccurate seeking for DVDs
+* fixed: #60: all kinds of artifacts with smooth motion FRC
+* fixed: #62: crash when external 3dlut file with long filename was missing
+* fixed: #65: film refresh rate was used with dxva decoding -> deinterlacing
+* fixed: #66: Cineform decoder v210 (10-bit 4:2:2) corruption
+* smooth motion FRC should be back to v0.86.0 performance levels
+* increased max CPU queue size to 128 frames
+* added support for DCI-P3 and BT.2020 primaries and BT.2020 matrix
+* added support for "matrix=2020" and "primaries=2020|DCI" tags
+* added resolution based auto detection for BT.2020 (UHD) and DCI-P3
+* added explicit detection for non PS3.0 capable GPUs
+* added IMadVRInfo interface which makes all sorts of info available
+* added a couple workarounds for weird crashes that were reported
+
+v0.86.1:
+* fixed: saving settings failed when madVR couldn't write to its own folder
+* fixed: sometimes old frames were flashing up when using smooth motion
+* fixed: seeking in exclusive mode could result in a freeze
+* fixed: high bitdepth content showed artifacts when using DXVA scaling
+* smooth motion FRC is now auto turned off for DVD menus
+* improved exclusive mode presentation timing with jittery audio clock a bit
+
+v0.86.0:
+* added smooth motion frame rate conversion algorithm
+* added settings page for smooth motion frc configuration
+* added "trade quality for performance" option for smooth motion frc
+* added test patterns to madTestPatternSource to test smooth motion frc
+* fixed: RGB input with odd width/height is now accepted untouched
+* fixed: IVideoWindow::put_Owner() failed when pins were not connected yet
+* fixed: madHcCtrl.exe autostart registry entry was incorrect / not working
+* fixed: occasional crash when using DXVA scaling with high-bitdepth content
+* fixed: green line at the left image border when using DXVA scaling
+* file "settings.bin" is not written into win7/8 "VirtualStore", anymore
+* slightly improved multi monitor behaviour (when using DXVA or MPC-BE)
+* filter enumeration timer is now only active during DVD playback
+* extended logging for fullscreen exclusive presentation queue
+* internal software video decoders are now disabled by default (again)
+
+v0.85.8:
+* fixed: 3:2 IVTC timestamps (film mode forced on) were not optimal
+* fixed: files which turn from progressive to interlaced didn't get deint
+* fixed: SoftCubic + Mitchell produced artifacts with exact 3x scaling
+* fixed: frame stepping sometimes froze for up to 3 seconds
+* fixed: some bugs found through crash report emails
+* fixed: videos with non-mod-4 height were unnecessarily cropped
+* fixed: when using DXVA decoding, 60i clips sometimes switched to 30Hz
+* fixed: "refreshRate" tag didn't work
+* added "repeated frames" OSD info (only when framerate = refresh rate)
+* added new interface IMadVRSubclassReplacement (for JRiver MC18)
+* added support for "deint=ivtc" tag
+* internal software video decoders are now disabled by default
+
+v0.85.7:
+* fixed: new 2x/3x shaders sometimes got activated when they shouldn't
+* renamed "speed up DXVA ..." options to "don't use copyback for DXVA ..."
+* disabled option "don't use copyback for DXVA deinterlacing" by default now
+
+v0.85.6.1:
+* fixed: "use a separate device for DXVA processing" couldn't be activated
+
+v0.85.6:
+* fixed: Jinc 3x image upscaling was broken (introduced in v0.85.5)
+* fixed: settings dialog eventually crashed when media player was closed first
+* removed "perform deinterlacing in separate thread" option (now always on)
+* moved "use a separate device for DXVA processing" to a different tab
+* option "use a separate device for presentation" now disabled by default
+* sorted "trade quality for performance" options: "best" options first
+* added two more DXVA related "trade quality for performance" options
+
+v0.85.5:
+* fixed: DXVA deinterlacing: when GPU couldn't keep up, audio sync got lost
+* fixed: odd source rectangles could result in "green" images (DXVA)
+* fixed: display mode changer sometimes didn't work for DVDs
+* slightly modified "use separate device for DXVA processing" behaviour
+* changed scaling defaults once more (Bicubic75, Lanczos3, Catmull-Rom)
+* disabled "perform deinterlacing in separate thread" by default
+* DXVA NV12 conversion routine now uses 16bit float instead of 32bit (faster)
+* up to 56% speed improvement for Jinc3    chroma upscaling
+* up to 40% speed improvement for Jinc3 AR chroma upscaling
+* up to 53% speed impr. for Jinc3/4     image upscaling with 2x scaling factor
+* up to 47% speed impr. for Jinc3/4 AR  image upscaling with 2x scaling factor
+* up to 39% speed impr. for non-Jinc    image upscaling with 2x scaling factor
+* up to 27% speed impr. for non-Jinc AR image upscaling with 2x scaling factor
+* up to 44% speed impr. for non-Jinc    image upscaling with 3x scaling factor
+
+v0.85.4:
+* fixed: crash in certain situations when using native DXVA decoding
+* fixed: native DXVA decoding sometimes produced wrong colors
+* fixed: DXVA scaling sometimes produced wrong colors (old FSE mode)
+* fixed: deinterlacing was always turned off with internal decoders
+* fixed: frame stepping didn't work well with internal decoders
+* added experimental option to "use a separate device for DXVA processing"
+* added "trade quality" option "use half frame rate for DXVA deinterlacing"
+* added "trade quality" option "store custom pixel shaders in 16bit buffer..."
+* added "trade quality" option "run custom pixel shaders in video levels..."
+* removed old tagging solution
+* added tag "matrix=709|601|NTSC|PAL|YCgCo|240M"
+* added tag "primaries=709|SmpteC|EBU|sRGB|NTSC|PAL|470M|240M|170M"
+* added tag "levels=PC|TV|fullrange|limited|doubleExp|tripleExp"
+* added tag "deint=On|Off|Video|Film"
+* added tag "blacklevel=%value%", value range [-50, +50]
+* added tag "whitelevel=%value%", value range [-50, +50]
+* added tag "contrast=%value%", value range [-100, +100]
+* added tag "brightness=%value%", value range [-100, +100]
+* added tag "saturation=%value%", value range [-100, +100]
+* added tag "hue=%value%", value range [-180, +180]
+* added tag "frameRate=%value%", e.g. 23.976, 24.000, 23, 24, ...
+* added tag "refreshRate=%value%", e.g. 23.976, 24.000, 23, 24, ...
+* not-yet DXVA-deinterlaced frames are now never dropped, anymore
+* video must now be >1050 wide or >576 high to be guessed as HD (ITU)
+* changed order of "source levels" toggle
+
+v0.85.3:
+* fixed: when using DXVA2 scaling, colors were too bright by "257/256"
+* fixed: freeze when disabling DXVA2 processing in the middle of playback
+* fixed: green screen when disabling DXVA2 proc. in the middle of playback
+* fixed: a non-default source rect made DXVA processing fail
+* hopefully fixed: freezes with some DXVA decoders (MS, MPC-HC)
+* hopefully fixed: incorrect colors when using DXVA2 decoding/processing
+* added auto correction if FPS upstream info is wrong by 2x or 0.5x factor
+* added code to silently suppress crashes in internal MPC-HC sub renderer
+* added code to silently suppress decoder crashes during graph destruction
+* added support for IVideoWindow::put_BorderColor()
+* added double/triple expanded TV range to "source levels" toggle
+
+v0.85.2:
+* fixed: CoreAVC DXVA decoder didn't work (introduced in v0.85.1)
+* fixed: ffdshow DXVA decoder didn't work
+* fixed: when using DXVA2, sometimes BTB and WTW were lost
+* fixed: thumbnail creation with MPC-HC sometimes didn't work
+* fixed: Jinc option was sometimes incorrectly disabled
+* fixed: 4:2:2/4:4:4 -> NV12 conversion routines used point sampling
+* added dithering to 10/16bit -> NV12 conversion routines
+* added SSE2 routine for P010/P016/P210/P216 -> NV12 conversion
+* added options for custom display output levels
+* added display specific color controls
+* added volatile source color controls, with keyboard shortcuts
+* brightness control now changes image gamma instead of white level
+* contrast control now changes image contrast instead of black level
+* custom shaders now run in PC levels (0-255) instead of TV levels
+* added optimized DXVA copyback solution for NVidia and Intel GPUs
+* optimized quality of DXVA2 NV12 -> HLSL NV12 conversion
+* combined DXVA deinterlacing and DXVA scaling into one step
+* modified DXVA scaling to now output RGB instead of NV12
+* added color correction and auto-loading for new subtitle interface
+* linear light processing might have gotten slightly faster
+
+v0.85.1:
+* fixed: corruption on bottom image border with native h264 DXVA2 decoding
+* fixed: DXVA2 scaling didn't work correctly
+* fixed: color controls resulted in washed out image with J.River MC
+* small DXVA2 decoding stability improvement
+* limited DXVA2 decoding to not work on Windows XP
+* limited DXVA2 decoding to not work when using the old FSE mode
+* custom shaders are now compiled with wanted profile instead of always ps_3_0
+* added "[DXVA2]" to debug OSD when DXVA2 decoding is used
+
+v0.85.0:
+* added support for external DXVA2 decoders
+* added support for DXVA2 scaling
+* added support for custom pixel shaders (pre- and post-scaling)
+* added support for media player color controls (IVMRMixerControl9)
+* added support for "IQualProp" interface for media player statistics display
+* added (crappy) support for high-bitdepth, 4:2:2 and 4:4:4 DXVA2 deinterlacing
+* changed default scaling settings
+
+v0.84.7:
+* fixed: another bug with frame stepping
+* fixed: keyboard shortcut for toggling deinterlacing showed error message
+
+v0.84.6:
+* fixed: encrypted DVDs didn't play
+* fixed: DVD menu "clickable areas" were not always located correctly
+* fixed: DVD menu buttons near the FSE seekbar didn't work
+* fixed: some minor cosmetical improvements to DVD menu rendering
+* fixed: seeking DVDs in fullscreen exclusive mode didn't flush the decoder
+* fixed: frame stepping should now work perfectly
+* fixed: MPC-HC froze when creating thumbnails
+* fixed: MPC-HC froze when seeking DVDs in Windows XP
+* fixed: scaling settings were not always remembered after "restore default"
+* 50i and 50p SD sources are now auto detected as having PAL/EBU primaries
+
+v0.84.5:
+* improved rendering behaviour with DVD menus and still images
+
+v0.84.4:
+* fixed: DVD playback often resulted in Macrovision errors
+* improved Jinc AR algorithm for clean computer type images/videos
+* added support for new subtitle interface (e.g. for future xy-vsfilter build)
+
+v0.84.3:
+* improved Jinc anti-ringing filter
+* fixed: after a few seeks playback sometimes started to stutter
+* maybe fixed: black screen after switching display mode
+* fixed: changing window size when using Jinc was slower than necessary
+* linear light scaling works slightly different now, might be a bit faster
+
+v0.84.2:
+* fixed: 4:4:4/RGB videos -> green or black screen (introduced in v0.84.1)
+* fixed: Jinc8 was not always properly remembered
+
+v0.84.1:
+* added Jinc 8-tap option
+* added support for Jinc chroma upscaling
+* added shortcut options for Nearest Neighbor scaling
+* fixed: exclusive mode was used in ZoomPlayer even if it was disabled
+* fixed: settings dialog showed blank page when starting with key shortcut page
+* fixed: crash when creating & freeing madVR instance without playing a video
+
+v0.84.0:
+* added media player screenshot functionality (IBasicVideo::GetCurrentImage)
+* added "Jinc" image upscaling algorithm
+* added anti-ringing filter for downscaling
+* added "user interface\keyboard shortcuts" settings page
+* added option to apply keys "only if media player has keyboard focus"
+* added options to adjust the keys for all existing keyboard shortcuts
+* added shortcut option for directly selecting specific source primaries
+* added shortcut option for directly selecting specific deint content types
+* added shortcut option for en/disabling automatic fullscreen exclusive mode
+* added shortcut option for disabling exclusive mode for 10 seconds
+* added shortcut option for en/disabling the display mode switcher
+* added shortcut option for en/disabling dithering
+* added shortcut option for changing the display bitdepth
+* added various shortcut options for selecting scaling algorithms
+* added IMadVRExclusiveModeCallback interface for exclusive mode notifications
+* renamed "luma up/downscaling" to "image up/downscaling"
+* renamed "use 10bit luma buffer ..." to "use 10bit image buffer ..."
+* scaling algorithm parameters (softness, sharpness, taps) are remembered now
+* scaling algorithm red/green graphs (settings dialog) now cover anti-ringing
+* modified shader storage to decrease madVR.ax file size
+* fixed: KMPlayer + madVR decoders + "delay playback start" was always paused
+* fixed: settings dialog had problems with yCMS data when using Overlay mode
+* fixed: cosmetical issue in fullscreen windowed mode when changing video files
+
+v0.83.7:
+* fixed: changing video files sometimes crashed
+* fixed: showing exclusive mode seekbar for image viewing crashed
+* madVR once again waits for D3D to be fully finalized
+
+v0.83.6
+* fixed: some more Overlay related issues (black screen, error messages etc)
+* fixed: media player closing and loading a different video was slow
+
+v0.83.5
+* fixed: starting in exclusive mode, then switching to Overlay -> error
+* modified exclusive mode seekbar design slightly
+* madVR doesn't wait for full direct3d finalization, anymore
+* improved crash reporting reliability
+
+v0.83.4
+* fixed: crash when using Overlay mode
+
+v0.83.3
+* maybe fixed: shutdown freezes in certain situations with MPC-HC
+* fixed: shutdown crash
+* fixed: glitch in the debug OSD
+* improved "look" when moving Overlay window with Aero on
+
+v0.83.2
+* some more Overlay improvements
+
+v0.83.1
+* fixed: Overlay is only activated for GPUs/drivers which support it
+* fixed: Overlay stopped working in certain situations (e.g. switching subs)
+* Overlay is now not activated by default, anymore
+
+v0.83.0
+* added "enable windowed overlay (Windows 7 and newer)" option
+* added "anti-ringing" option for chroma and luma scaling
+* added extra "delay playback start after seeking, too" option
+* added new calibration option "disable GPU gamma ramps"
+* doubled exclusive mode seekbar in size
+* added position / runtime information to exclusive mode seekbar
+* removed some tweak options (rendered superfluous by new WHQL NVidia driver)
+* madVR window is now created and served by a separate thread
+* Windows timer/scheduler is now always set to finest possible resolution
+* modified DXVA deinterlacing to work a bit more similar to EVR
+* AVI Decompressor output is now always considered to be decompressed video
+* added workaround to hide kmplayer crash when resizing video
+* fixed: crash when multiple madVR instances are created at the same time
+* fixed: freeing madVR instance sometimes resulted in a crash
+* fixed: VSFilter passes RGB -> input was incorrectly considered limited range
+* fixed: bilinear chroma upsampling used MPEG1 chroma position instead of MPEG2
+* fixed: switching deinterlacing mode -> "resetting Direct3D device failed"
+* fixed: crash when playing certain video files with AVSplitter
+
+v0.82.5
+* improved D3D11 exclusive -> windowed switch slightly, still not great, though
+* option "delay playback start..." now requires both GPU+CPU queues to be full
+* fixed: YCgCo decoding matrix was not correct
+* fixed: internal 4:4:4 decoding produced wrong colors (introduced in v0.81)
+* fixed: display mode changer didn't always activate when entering fullscreen
+* fixed: forcing deinterlacing + IVTC on was caused by 30p tag instead of 24p
+* fixed: h264 media type parsing sometimes crashed
+* fixed: crash when no filter in the chain provided frame rate information
+* fixed: one thread was started per video frame (introduced in v0.82)
+* maybe fixed: entering/leaving exclusive mode steals keyboard focus
+
+v0.82.4
+* fixed: 2 more finalization crashes
+* fixed: display mode changer stopped working after a 2nd video file was loaded
+* fixed: filter properties dialog didn't show the full madVR version number
+
+v0.82.3
+* fixed: Ctrl+C / File Close didn't work in MPC-HC  (introduced in v0.82)
+* fixed: Ctrl+E in MPC-HC didn't work  (introduced in v0.82)
+* fixed: finalization crash due to stupid bug  (introduced in v0.82)
+
+v0.82.2
+* fixed: SoftCubic was stuck on "softness: 50" (introduced in v0.82)
+* fixed: in certain situations there was a new freeze (introduced in v0.82)
+* fixed: PotPlayer crashed sometimes when turning audio processing on/off
+* fixed: option "if in doubt activate deinterlacing" didn't work properly
+
+v0.82.1
+* fixed: playback is sometimes stuck with a black screen (introduced in v0.82)
+* fixed: seeking sometimes results in frozen video frame (introduced in v0.82)
+
+v0.82
+* added: new option to activate deinterlacing if in doubt whether it's needed
+* added: new IVTC option to only look at pixels in the frame center
+* added: IVTC "cadence breaks" information to OSD; resets with Ctrl+R, as usual
+* deinterlacing + IVTC are now always forced on for 60i sources tagged as 24Hz
+* improved IVTC cadence logic
+* improved DXVA deinterlacing behaviour slightly
+* improved display mode change event handling
+* improved exclusive -> windowed switch a little bit more
+* fixed: madVR sometimes didn't notice changed display mode
+* fixed: if DXVA2 deinterlacing was not available in XP, it made madVR crash
+* fixed: crash when moving madVR to another display with ZoomPlayer
+* fixed: freeze when switching subtitles in paused state
+* fixed: closing down madVR didn't always wait for the closing to complete
+* fixed: closing the media player while madVR was in exclusive mode -> freeze
+* fixed: sometimes asking for a freeze report created multiple reports at once
+* fixed: MS DVD Navigator caused error in the primaries/matrix auto detection
+* fixed: when switching from Bicubic to SoftCubic, options weren't updated
+* fixed: red error messages were supposed to disappear after a while but didn't
+* fixed: red error messages no longer show duplicate error messages
+
+v0.81
+* added automatic exception catching functionality
+* added manual freeze report functionality (press Ctrl+Alt+Shift+Break)
+* added option to switch display mode only when media player is in fullscreen
+* added option to restore display mode when media player leaves fullscreen
+* display mode changer now reacts on film (24p) vs. video (60p) content type
+* improved renderer behaviour when display mode changes
+* improved ivtc: faster detection of cadence changes
+* improved ivtc: more robust against compression artifacts
+* deint + ivtc is now auto activated for 60i movies which are tagged to 24 Hz
+* ivtc is now auto activated for 50i movies which are tagged to 25 or 24 Hz
+* deinterlacing is only turned on for 50i and 60i movies now
+* added patch to MS VC-1 decoder -> deinterlacing off
+* modified file name tagging logic (24p, 24i, 24fps, 24Hz, etc)
+* improved behaviour with decoders which don't output proper interlaced flags
+* improved exclusive -> windowed mode behaviour slightly, mainly for ZoomPlayer
+* added "sharpness: 100" option for Bicubic scaling
+* queue sizes are now always 16/8 by default, no more automatic adjustments
+* keyboard shortcuts: always only change things temporarily by default now
+* keyboard shortcuts: some changes (not all) can be stored by pressing F2 now
+* the source levels (TV vs PC) can be stored now
+* the source content type (film vs video) can be stored now
+* key presses are now only "swallowed" if media player process has key focus
+* osd keyboard handling runs in its own thread now
+* added many more languages to the "Pause" MPC-HC message block
+* used GPU RAM is now not shown in osd, anymore
+* increased upload thread priority slightly
+* fixed: ZoomPlayer eventually froze when leaving exclusive mode
+* fixed: some users had composition rate in exclusive mode OSD -> problems
+* fixed: crash when video window size was reduced to a very small size
+* fixed: frame stepping sometimes resulted in weird play/pause mixed state
+* fixed: one case where "delay playback start..." resulted in paused state
+* fixed: v210 pitch/stride handling was broken
+* fixed: YV24 had swapped chroma channels
+* fixed: YV24 DXVA deinterlacing resulted in image corruption
+* fixed: OSD API didn't capture mouse events on mouse down
+
+v0.80
+* added IVTC algo with decimation and support for 3:2, PAL and Anime cadences
+* Ctrl+Alt+Shift+T switches between video (DXVA) and film (IVTC) content type
+* fixed: moving media player to another monitor made DXVA deinterlacing crash
+* fixed: DXVA deinterlacing produced wrong colors (only with HD videos + ATI)
+* fixed: after a refresh rate change the composition rate didn't update
+* fixed: calculation of consumed GPU RAM was wrong
+* fixed: minimizing ZoomPlayer with playing video made some problems
+* fixed: v0.79 didn't always detect external refresh rate changes
+* fixed: some h264 AVI files made madVR crash, depending on the splitter
+* fixed: improved internal decoder MPEG2 timestamp handling
+* fixed: zooming video extremely small made madVR close the media player
+* fixed: video was positioned wrong when media player cropped top/left
+* fixed: a couple of small Direct3D related bugs
+* fixed: a little resource leak
+* improved presentation timestamp correction a bit
+* improved "IMadVRExclusiveModeInfo::IsExclusiveModeActive"
+* improved "IMadVRExclusiveModeControl::DisableExclusiveMode"
+* added window size checks to detect to-be-expected exlusive mode failures
+* added new interface "IMadVRDirect3D9Manager" for XBMC (work in progress)
+* modified automatic queue sizes
+* improved logging during media player shutdown
+
+v0.79
+* modified deinterlacing logic to save GPU RAM
+* added resource manager to save GPU RAM and a little bit of GPU performance
+* added information about used / total GPU RAM to debug OSD (Ctrl+J)
+* added new options to choose decoder and GPU queue sizes
+* added automatic adjustment of queue sizes, based on GPU RAM size
+* corrected queue sizes with deinterlacing turned on (size 1 too high in v0.78)
+* improved deinterlacing quality at the start of playback and after seeks
+* improved the way madVR calls DXVA2 (now more similar to EVR)
+* moved some eventually CPU intensive code from render to separate thread
+* optimized performance of DXVA2->PixelShader texture conversion for some GPUs
+* optimized internal libav decoder format conversion logic
+* movie frame rate overwrite via file name now also sets deinterlacing on/off
+* option "perform deinterlacing in separate thread" is now "on" by default
+* MPC-HC OSD text "Pausa" is now blocked (to avoid disappearing subtitles)
+* fixed: source cropping (J.River MC) could result in corrupted chroma channel
+* fixed: IMediaSample allocator wasn't fit for decoder queue size of 12 frames
+
+v0.78
+* added support for DXVA2 deinterlacing
+* added option to enable/disable automatic activation of deinterlacing
+* added option to force off deinterlacing for 48i sources
+* added option enable/disable performing deinterlacing in a separate thread
+* added auto 4:2:2/4:4:4 to 4:2:0 conversion when using DXVA2 deinterlacing
+* added OSD deinterlacing information
+* Ctrl+Alt+Shift+D turns deinterlacing on/off
+* Ctrl+Alt+Shift+F switches deinterlacing field order (auto, top, bottom first)
+* changed gamma decrease key combo from Ctrl+Alt+Shift+F to Ctrl+Alt+Shift+B
+* increased decoder queue size to 12 frames
+* added support for h264 10bit 4:2:2 decoding
+* improved frame stepping
+* improved internal frame locking mechanism
+* removed warning "creating 10bit render texture failed, used 8bit instead"
+* updated libav/ffmpeg dlls
+
+v0.77
+* added support for ffmpeg/libav h264 4:2:2 decoding
+* optimized ffmpeg/libav compiling options
+* fixed: madVR disliked getting 2 frames with identical timecodes all the time
+* modified autodetect priorities slightly
+
+v0.76
+* fixed: crash on MPC-HC exit / close file
+* fixed: OSD didn't show properly or didn't show at all
+* fixed: subtitles showed with a black background
+* fixed: trade quality -> use 10bit chroma option was used for luma sometimes
+* unfortunately subtitles are not running through 3dlut, anymore
+
+v0.75
+* fixed: v0.74 stopped decoder DirectShow filter from being released properly
+* fixed: PotPlayer sometimes crashed when switching video files
+* fixed: internal decoders made problems with cropped MKVs & Haali Splitter
+* fixed: OSD sometimes didn't appear in ZoomPlayer in exclusive mode
+* fixed: VP70 decoder showed video upside down
+* fixed: RGB24 input sometimes crashed madVR
+* fixed: ffdshow RGB input level detection sometimes failed
+* subtitles run through the 3dlut now, too
+* internal decoders are now auto disabled if required decoder dlls are missing
+* added option to scale Luma in linear light, disabled by default
+* RGB input with unknown range is now treated by default as full range
+* added detailed information about matrix, primaries and levels to debug OSD
+* updated libav/ffmpeg dlls
+
+v0.74
+* fixed: internal decoder showed 10bit video with non-mod-4 width distorted
+* fixed: primaries/matrix auto detection eventually failed if ffdshow upscaled
+* fixed: MPEG2 internal decoder timestamps didn't work well with DVDs/VOBs
+* fixed: ZoomPlayer "Media: Next Track" -> OSD "windowed" stayed forever
+* fixed: corruption with ordered chapters, when using internal decoders
+* added new interface "IMadVRExclusiveModeControl"
+* added new interface "IMadVRSettings"
+* added support for h264 files with a 3-byte NAL length
+
+v0.73
+* fixed (again): video playback in PotPlayer froze in various situations
+* fixed: OSD changes could result in dropped frames (reverted to older code)
+* fixed: crash if the source filter reported a NULL file name
+
+v0.72
+* empty file "force full range input" in madVR folder overwrites auto detection
+* empty file "YCbCr" in madVR folder makes madVR output YCbCr data directly
+* fixed: video playback in PotPlayer froze in various situations
+* fixed: display mode change + "delay playback start..." -> video stayed paused
+
+v0.71
+* for DVD playback start, "delay playback start..." option is now auto disabled
+* when OSD changes, render queue is cut down to 3/8 to make OSD more responsive
+* when madVR pauses/starts/stops graph, notification message 0xFA17 is sent now
+* fixed: crash with NVidia PureVideo MPEG2 Decoder
+* fixed: crash with h264 AVI content
+* fixed: unpause delay with internal decoders in exclusive mode
+* fixed: subtitles disappeared when pausing playback
+* fixed: madVR caused "File Source Async" to never be destroyed
+* fixed: full range YCbCr input showed a green tint (introduced with v0.70)
+
+v0.70
+* delay times improved for option "pause playback until render queue is full"
+* option "pause playback until render queue is full" is now disabled by default
+* exclusive mode tweak options regrouped and branded as "not recommended"
+* internal MPEG2/h264 decoders are enabled by default now, VC-1 stays disabled
+* display mode switcher now "likes" 24.000 Hz mode for 23.976 fps movies better
+* improved timestamps of internal libav/ffmpeg MPEG2 decoder
+* improved seeking with internal libav/ffmpeg h264 decoder
+* fixed: moving from one monitor to another sometimes caused graph to pause
+* fixed: display mode changer caused internal decoders to stop working
+* fixed: gamma processing with RGB input produced a black screen
+* fixed: h264 mediatype parsing corrupted RAM, eventually resulting in a crash
+* fixed: color processing accurateness problems introduced in v0.68
+* fixed: exclusive mode seekbar didn't work during DVD playback
+* fixed: tracks with a "|" in the name confused the tray icon context menu
+* fixed: at playback start, and after unpausing there was sometimes judder
+* fixed: OSD sometimes flickered at playback start, and after unpausing
+
+v0.69
+* fixed: (again) timestamp for libav/ffmpeg decoders
+* another seeking improvement
+
+v0.68
+* added support for all primaries referenced by h264, VC-1, MPEG2 and MS
+* added support for all decoding matrices referenced by h264, VC-1, MPEG2 & MS
+* primaries, matrix and range are now read from VC-1, MPEG2 and h264 headers
+* ffdshow RGB output levels are now automatically detected and handled properly
+* added support for primary, matrix and range info via DirectShow media type
+* improved primary and matrix guesses, if no detailed information is available
+* primaries, matrix and range are auto set to what the source requires
+* VC-1, MPEG2, h264 headers are read from external decoders, without their help
+* Ctrl+Alt+Shift+I toggles input levels (source = full range or not)
+* added info to OSD about video bitstream and madVR raw video input formats
+* improved internal decoder seeking behaviour
+* video bitstream AR is used now if no container AR is available
+* libav decoder is now automatically used if Intel decoder can't handle a file
+* Intel decoder is now automatically used for interlaced VC-1 content
+* fixed: some new problems with external decoders, introduced in v0.67
+* fixed: crashes with Intel decoder during playback or when seeking
+* fixed: libav/ffmpeg decoder crashed with full_range h264 videos
+* fixed: bad timestamps with internal libav/ffmpeg decoder
+* fixed: libav/ffmpeg VC-1 decoder showed corruption at the bottom of the image
+* fixed: graphical corruption with internal decoders in certain situations
+* fixed: connection to 4:2:2 h264 streams is now declined
+
+v0.67
+* added libav/ffmpeg Software Decoders for MPEG2, VC-1 and h264 (experimental)
+* added Intel        Software Decoders for MPEG2, VC-1 and h264 (experimental)
+* added new option "delay playback start until render queue is full"
+* added new interface IMadVRRefreshRateInfo for media player developers
+* fixed: OSD was updated all the time, even in paused state
+* fixed: when using GraphEdit, madVR video window was sometimes too small
+* fixed: madVR asked upstream filter to change output FourCC without need
+
+v0.66
+* rewritten large parts of the OSD logic
+* added APIs for media player devs to draw their OSDs/GUIs in exclusive mode
+* added API for media player devs to disable the madVR seekbar
+* fixed: OSD is now above subtitles instead of under
+* OSD + seekbar are now drawn to full window size, not to video rect, anymore
+* madVR debug OSD is now white with a dark background
+* using higher internal precision for internal calculations now
+* fixed a couple of bugs in gamma / gamut / 3dlut processing
+* instead of yRGB, madVR/yCMS are now using the measured display primaries
+* improved compatability with uncompressed video files
+* fixed: avisynth -> ffdshow -> RGB -> madVR produced upside down image
+* fixed: seekbar showed up when playback monitor was positioned "under" primary
+* simplified calibration settings a bit more
+
+v0.65
+* fixed: decode matrix + source primaries detection only worked once
+* fixed: yet another bug in the automatic display changer
+
+v0.64
+* changed a couple of calibration related texts
+* Ctrl+Alt+Shift+C toggles gamma curve type now instead of Ctrl+Alt+Shift+T
+* Ctrl+Alt+Shift+M toggles decoding matrix
+* Ctrl+Alt+Shift+P toggles source primaries
+* fixed: disabling gamma processing didn't show immediate effect
+* fixed: one more display mode changer bug
+* added support for switch to 59i/60i display mode for 59p/60p content
+* Windows key now only stops exclusive mode when running on primary monitor
+* seekbar is now shown only if mouse cursor is on playback monitor
+* when the PC is locked (Windows Key + L) madVR now pauses playback
+* fixed: D3D11 playback on secondary monitor could result in window size bug
+
+v0.63
+* fixed: couple of bugs in the display mode changer
+* fixed: nearest neighbor in v0.62 was broken (bilinear was used instead)
+* fixed: removed nonsense 9bit/10bit display bitdepth options
+* fixed: yCMS tab in settings dialog is now only visible on calibration page
+* added: complaint when yCMS is selected, but no gamut measurements provided
+* added new "enable gamma processing" option (default = off)
+* renamed "something else" to "unknown"
+* moved gamut/gamma options from "properties" page to "calibration" page
+* gamut/gamma options in calibration page are now grayed out when using 3dlut
+* gamma processing can't be enabled if calibration -> gamma is set to "unknown"
+* added primary/gamut "sRGB" option
+
+v0.62
+* added display "properties", "calibration" and "color & gamma" settings pages
+* added option to define the native display bitdepth (affects dither strength)
+* added options to define how the display was calibrated (gamut + gamma)
+* moved "Video/PC levels" option to display "properties" settings page
+* added options to define which gamma / transfer function to use
+* replaced old "use 3dlut" option with new controls on "calibration" page
+* added integrated GUI for yCMS 3dlut creation, no more console hacking needed
+* added "please wait" dialog while yCMS is downloaded + installed
+* added "please wait" dialog while 3dlut file is created
+* added support for 6 and 7 bit 3dlut files (see trade quality for performance)
+* added option to choose a manually created external 3dlut file (per display)
+* there's only one 3dlut file per display now
+* 3dlut is now always yRGB / RGB_Video input and RGB_Video output
+* YCbCr -> RGB conversion is now always done by shader math, not by 3dlut
+* Video/PC levels conversion is now always done by shader math, not by 3dlut
+* rewritten rendering and pixel shader chain
+* subsampled YCbCr is now upsampled & converted to RGB first, then scaled
+* chroma upsampling got quite a bit faster (because it's now always exactly 2x)
+* luma scaling got a tiny bit faster, depending on scaling factor and taps
+* Ctrl+Alt+Shift+C displays & toggles color format (BT.709 -> BT.601 -> PAL)
+* Ctrl+Alt+Shift+G displays and increases the Gamma value (2.20 -> 2.25 -> ...)
+* Ctrl+Alt+Shift+F displays and decreases the Gamma value (2.20 -> 2.15 -> ...)
+* Ctrl+Alt+Shift+T displays and changes the Gamma curve type (pure power / BT)
+* dither is using a texture again instead of shader math
+* dither is now colored and differs for every video frame
+* added support for  8 bit 4:2:0 media types IYUV, I420, NV21, ICM*
+* added support for  8 bit 4:2:2 media types YUY2, YVYU, UYVY, YV16, yuv2, ...
+* added support for  8 bit 4:4:4 media types AYUV, YV24, I444, v308, v408
+* added support for  8 bit RGB   media types RGB32, RGB24, BGRA, ABGR, RGBA
+* added support for 10 bit 4:2:2 media types P210, Y210, v210
+* added support for 10 bit 4:4:4 media types Y410, v410
+* added support for 16 bit 4:2:2 media types P216, Y216, v216
+* added support for 16 bit 4:4:4 media types Y416, v416
+* added support for 16 bit RGB   media types RGB48, RGB64, b48r, b64a, ...
+* added hints to "install.bat" and "readme.txt" to not delete the madVR folder
+* fixed: madVR rendering window in GraphEdit didn't have correct size
+* changed VSync priority back to "time critical"
+* slightly changed tray icon mouse click behaviour
+
+v0.61
+* fixed: exclusive -> windowed with D3D11 made media player buttons disappear
+* fixed: exclusive -> windowed with D3D11 made media player window too big
+* fixed: closing video file in D3D11 exclusive mode resulted in crash
+* added new tweak option "overshoot max frame latency"
+
+v0.60
+* fixed: exclusive -> windowed with D3D11 made media player buttons disappear
+* fixed: fullscreen exclusive mode was sometimes not activated properly
+* Windows Key press now forces a 3 second delay before going back to exclusive
+
+v0.59
+* added D3D11 presentation path
+* renamed glitch hack to "use a separate device for presentation"
+* added option to activate D3D11 presentation path
+* switched and renamed option "present only one frame at a time"
+* added tweak option "run presentation in a separate thread"
+* added tweak option "limit rendering times to avoid glitches"
+* added option "restore original display mode when media player closes"
+* added option "treat 25p movies as 24p (requires Reclock)"
+* added detection for "Windows Key" press -> switch out of exclusive mode
+* fixed: having only one mode in the display mode switcher didn't work
+* fixed: when entering fullscreen, sometimes the seekbar incorrectly showed up
+* fixed: changing refresh rate behind madVR's back resulted in a freeze
+* fixed: ZoomPlayer froze when moving to secondary monitor fullscreen playback
+* a couple more minor changes and bugfixes
+
+v0.58
+* fixed: 23p/59i movie did not activate 59p display mode
+* removed v0.57 win7 specific presentation path again, didn't work so well
+* added glitch hack as a new render option (Vista/Win7 only)
+
+v0.57
+* added (simple) automatic display mode changer
+* added slightly modified exclusive presentation path for win7 and newer OSs
+* if decoder doesn't tell the source framerate, madVR searches upstream
+* if DScaler IVTC Mod is in the graph, madVR considers 29.970 to be 23.976
+* if source file name contains framerate token, that overwrites DirectShow info
+* added hack to stop Direct3D from messing up refresh rates
+* added batch file to restore default settings
+* fixed: in XP setting the number of pre-presented frames to 1 didn't work
+* fixed: secondary display attached to a receiver wasn't handled correctly
+
+v0.56
+* fixed: going directly to fullscreen mode made madVR freeze
+
+v0.55
+* a couple of bugfixes and improvements for dual monitor setups
+* added new render option tab named "exclusive mode settings"
+* moved some exclusive mode options from "general settings" tab to new tab
+* added separate flush options for exclusive mode (old and new path)
+
+v0.54
+* fixed high CPU consumption in new exclusive mode rendering path (hopefully)
+* added option to use windowed mode flush tweaks for new exclusive path, too
+* added batch file to switch between debug <-> release mode
+
+v0.53
+* moving madVR to another monitor during playback is now properly handled
+* a couple more tweaks to the new exclusive mode rendering path
+* vsync handling now uses its own Direct3D device instance
+* improved handling of rendering failures
+* OSD: rendering/presentation stats are now only shown when they're meaningful
+* OSD: queue and dropped frames information is now directly next to each other
+
+v0.52
+* fixed: presentation glitches were not reported at all
+* fixed: reaction to presentation glitches was (very) wrong
+* added some more fixes and tweaks to the new exclusive mode rendering path
+* fixed: seek bar sometimes got stuck with new exclusive path when paused
+* fixed: starting in paused mode sometimes failed to show first video frame
+* fixed: pre-render option wasn't always enabled/disabled correctly
+* debug OSD is now green instead of red (doom9 majority wish)
+
+v0.51
+* fixed: seeking while paused with new exclusive path didn't update image
+* added D3D9 tweak to allow pre-rendering of more than 3 frames
+* added a number of fixes and tweaks to new exclusive mode rendering path
+* readded "presentation glitches" to OSD, but only for new exclusive path
+* added option to choose the no of pre-rendered frames for new exclusive path
+
+v0.50
+* added new exclusive mode rendering path
+* added option to use the old exclusive mode rendering path
+* fixed: settings window suddenly showed in taskbar, wasn't supposed to
+* changed "disable desktop composition" default setting to "off"
+* removed option "upload frames in render thread", forced to "off" now
+* removed "presentation glitches" information from OSD (was always 0, anyway)
+* madHcNet doesn't initialize WinSock, anymore, when LAN access is disabled
+
+v0.49
+* fixed: settings could not be edited if a monitor had a unicode name
+* fixed: settings dialog with tray icon disabled took a long time to appear
+* fixed: sometimes "madVR instance didn't reply properly" appeared
+* settings are now stored under "HKCU\Software\madshi\madVR\Settings", too
+* LAN support is disabled by default now, can be enabled through tray icon menu
+
+v0.48
+* fixed: resource leak in OSD text messages
+* disabled "Play" and "Pause" OSD messages until rendering chain is rewritten
+* added support for ISubRenderCallback2, appears to fix subtitle sync problems
+
+v0.47
+* fixed: madVR didn't close properly
+
+v0.46
+* reverted change introduced in v0.43 which might have caused instability
+* modified subtitle syncing logic
+* ISubRenderCallback is now only used for MPC-HC builds >= 1.5.2.2988
+
+v0.45
+* fixed: video rectangle was sent incorrectly to subtitle renderer
+
+v0.44
+* fixed ZoomPlayer OSD graphical corruption problem (again)
+* fixed bug in OSD text message handling
+* added support for subtitle rendering through ISubRenderCallback
+
+v0.43
+* restored some v0.36 behaviour for exclusive -> windowed switch (XP only)
+* fixed FLV problem (introduced with v0.42)
+* fixed bug which resulted in Aero en/disabling happening incorrectly
+
+v0.42
+* changed aspect ratio reporting back (PotPlayer and JR MC didn't like v0.41)
+* improved forced redrawing of all GUI stuff after exclusive -> windowed switch
+* removed some of the "disable desktop composition" modes
+
+v0.41
+* added workaround for buggy decoders (hopefully it breaks nothing else)
+* added forced redrawing of all GUI stuff after exclusive -> windowed switch
+
+v0.40
+* turning desktop composition back on should be without delay now
+* DXVA NV12 connections are refused now
+
+v0.39
+* fixed: 16:9 DVDs were shown as 4:3 (introduced in v0.37)
+
+v0.38
+* changed mouse cursor management (for J.River MC)
+* added support for NV12 (4:2:0 8bit), P010 (4:2:0 10bit), P016 (4:2:0 16bit)
+
+v0.37
+* IBasicVideo::SetDestinationPosition not needed, anymore (for J.River MC)
+* exclusive -> windowed switch should be a bit faster in Vista+ now
+* added options for disabling desktop composition
+* added workaround for MPC-HC MPEG2 decoder crash with VOB files (decoder bug)
+* settings dialog now remembers the page you've been on
+* fixed small bug in video levels output math
+
+v0.36
+* fixed: settings changes only showed affect after reloading the video
+* fixed: Ctrl+Alt+Shift+Y didn't work properly, anymore
+* hopefully fixed: madVR startup delay on some PCs
+
+v0.35
+* reverted back to v0.32 clock logic (no more clock jitter removal)
+* fixed: ESC (= pause + minimize) in KMPlayer in exclusive mode -> freeze
+* fixed: multi monitor device management didn't fully work
+* maybe fixed: problem with ZP + MKV splitter + exclusive mode + playlist
+* added logging to gather more info about one instance of madVR freezing
+
+v0.34
+* fixed: resizing media player window made problems (introduced with v0.33)
+
+v0.33
+* fixed: crash when source filter didn't allocate chapter names
+* added algorithm to remove audio clock jitter
+* added country flags for video/audio/subtitle tracks in tray icon menu
+* moved "close media player" above audio/subtitle tracks in tray icon menu
+* modified clock deviation measurement algorithm
+* added "ideal refresh rate" information to OSD
+* added madVR version number to debug log output
+* "video size changed" event is sent more selectively, now
+
+v0.32
+* fixed: calculation of estimated frame drops/repeats was incorrect
+* fixed: one madVR shutdown crash cause
+* fixed: log file was held locked even after madVR finalization
+* simplified tray icon menu structure (less submenus)
+* left and right click on tray icon shows different context menus now
+* added monitor/receiver device management functionality to settings logic
+* monitor/receiver devices are now automatically detected and identified
+* monitor related settings are now stored separately per monitor device
+* ffdshow is not asked for audio/subtitle streams, anymore (stability issues)
+
+v0.31
+* fixed: sometimes frames were incorrectly dropped in paused state
+* fixed: SoftCubic100 didn't stick for Luma up/downscaling
+* fixed: media player icon was not transfered correctly from win7 to XP
+* local communication is not done via TCP/IP, anymore -> no firewall problems
+* the exe/dll/ax files are now signed to reduce anti virus false alarms
+* added reference vs. system "clock deviation" information to OSD
+* added information about estimated number of dropped/frames per second to OSD
+* uninstall.bat now automatically removes the tray icon
+* added new option "delay switch to exclusive mode for 3 seconds"
+* renamed some settings folders
+
+v0.30
+* fixed: some scaling options didn't "stick"
+* added workaround for stack overflow with some videos (not madVR's fault!)
+* madVR settings dialog is now "always on top"
+* tray icon configuration dialog is now "always on top"
+
+v0.29
+* fixed: crash when trying to enter the 3dlut settings tab
+* fixed: settings dialog didn't work when tray icon was disabled
+* fixed: tray icon didn't properly go away in certain circumstances
+
+v0.28
+* fixed: seek bar was sometimes shown even with exclusive mode disabled
+* fixed: logging could result in frame drops
+* fixed: new frame drop logic (v0.27) sometimes dropped more than necessary
+* fixed: sometimes madVR started with a black screen and then crashed
+* maybe fixed: exclusive mode didn't work with interlaced refresh rates
+* full rewrite of settings logic
+* first draft of completely new settings dialog
+* added "mad* home cinema control" tray icon
+* added tray icon configuration dialog
+* added media player controls (play, pause, stop, exit) to tray icon
+* added video/audio/subtitle switching functionality to tray icon
+* added chapter selection functionality to tray icon
+* added seek intervals to tray icon
+* added automatic listing of media players running madVR on any PC in the LAN
+* added LAN media player remote control abilities to tray icon
+* sysinternals ProcessExplorer is not "overpowered", anymore
+* removed timing model tweak option
+
+v0.27
+* fixed: after switch to windowed mode seek bar sometimes stayed active forever
+* fixed: sometimes after a Direct3D reset, rendering stopped working
+* exclusive mode does now "overpower" all other processes, except task manager
+* frame drop/delay logic fully rewritten
+* when switch to exclusive mode fails, madVR now goes back to windowed mode
+* madVR seek bar is now also shown in fullscreen windowed mode
+* added forced OSD display "PC/TV levels" when using Ctrl+Alt+Shift+Y
+* modified dynamic media type change handling a bit to reduce overhead
+
+v0.26
+* fixed: windows on primary monitor were seen as covering secondary playback
+* fixed: when starting in fullscreen mode, madVR's seek bar didn't work
+* fixed: starting ZoomPlayer in fullscreen exclusive mode made problems
+* when "maximizing" the media player, exclusive mode is activated at once now
+* exclusive mode switch is now done after 3 seconds instead of 1 second
+* while exclusive mode is active, media player window is made topmost now
+* windowed tweak "timing model" is now used for exclusive mode, too
+* changed Aero timing mode once again
+* added forced OSD display "windowed" vs. "exclusive" when switching
+* new interface allows media players to ask whether madVR is in exclusive mode
+
+v0.25
+* fixed: launching file in fullscreen resulted in madVR freeze
+
+v0.24
+* added *automatic* fullscreen exclusive mode
+* added optional seek bar (only for fullscreen exclusive mode)
+* added OSD interface for media players
+* added new options for automatic fullscreen exlusive mode and seek bar
+* added rendering mode information to OSD
+* added some code to avoid playback freezes
+* changed Aero timing mode slightly
+* changing backbuffer count now shows immediate effect
+* added keyboard shortcut Ctrl+Alt+Shift+Y for switching PC <-> video levels
+
+v0.23
+* fixed: some mouse events didn't work in ZoomPlayer, anymore
+* fixed: when changing CoreAVC settings, madVR video stopped updating
+* fixed: when ffdshow needed bigger buffers, there was a crash
+* made OSD half transparent again (for now)
+* removed "use managed 3dlut texture" option
+
+v0.22
+* fixed: incompatability with some decoders/videos (corrupted chroma display)
+* fixed: incompatability with some decoders/videos (playback doesn't start)
+* fixed: incompatability with DirectVobSub (playback doesn't start)
+* fixed: incorrect aspect ratio with some decoders/videos
+* implemented support for realtime video resolution change
+* added workaround for buggy MPC HC m2ts VC-1 splitter (shuffled timestamps)
+* improved frame drop/delayed behaviour when decoder is too slow
+* removed "copy only 1 backbuffer at a time" option -> now always set
+* added option "use managed 3dlut texture (XP only)", default true
+* OSD state (on/off) survives media player restarts now
+* OSD statistics reset (Ctrl+R) now also works if OSD is not turned on
+* media player window is not moved to front by madVR, anymore
+
+v0.21
+* fixed: some of the new tweak options weren't stored properly
+
+v0.20
+* fixed: Microsoft VC-1/WMV decoder didn't start playing in Windows 7
+* got rid of special Aero rendering mode (didn't work as well as expected)
+* added 4 new tweak options
+* you can now put an empty log file in madVR's folder to overwrite the log path
+
+v0.19
+* small timing tweak for windowed playback with high display refresh rates
+* got rid of "don't render right before presentation" option
+* increased backbuffer queue size to 8 (in Vista and newer OSs only)
+* dropped/delayed frames stats are reset now when a new video is played
+* added Aero "composition rate" information to OSD
+* added "aero delayed/dropped frames" information to OSD
+* added special Aero rendering path, must be activated by new option
+
+v0.18
+* fixed: bug in "anti synchronized judder" code
+* fixed: backbuffers weren't properly invalidated after a frame drop
+* fixed: a media player exit crash cause
+* improved "flush (sleep)"
+* added option "don't render right before presentation"
+* officially reintroduced support for "delayed frames"
+* added "delayed frames" information to OSD
+* added "presentation glitches" information to OSD
+* dithering is done by using shader math now, instead of texture access
+* removed "flush before present" option
+
+v0.17
+* fixed: problem with very slow NVidia drivers, once again
+* improved compatibility with some weird behaving decoders
+
+v0.16
+* fixed: freeze during startup, or after a few seconds of playback
+* fixed: media player doesn't close properly
+
+v0.15
+* fixed: crash during startup
+
+v0.14
+* fixed: corruption with some decoders and video clips
+* fixed: fullscreen -> win+D -> ResetDevice failed
+* optimized fullscreen <-> windowed switching a bit
+* relaxed texture requirements -> newer Intel GPUs might work now
+* added new option "use managed upload textures (XP only)"
+* added several new options to tweak GPU flush behaviour
+* removed "disable anti-tearing fix" option
+
+v0.13
+* fixed: scanline reading problem with newer NVidia drivers
+* fixed: sometimes high CPU consumption when paused
+* fixed: one potential cause for motion judder
+* fixed: GPU memory leak, when starting multiple videos in 1 player instance
+* fixed: CPU memory leak, when starting multiple videos in 1 player instance
+* fixed: crashes or artifacts with some movies with odd resolutions
+* fixed: initialization error messages were sometimes not correctly shown
+* improved (but not fully fixed) tearing problem with 24Hz playback
+* changed timing to improve rendering performance
+* changed texture allocation to improve rendering performance
+* optimized logging performance
+* madVR doesn't ship with cr3dlut, anymore
+* added capability to automatically download and install yCMS
+* playback start is now delayed until 3dlut is created and loaded
+* playback is paused during 3dlut creation (if a new 3dlut needs to be created)
+* OSD: added 5s max stats
+* OSD: added "available texture memory"
+* OSD: Ctrl+R resets "dropped frames" (only works when OSD is shown)
+* OSD: queues changed from "current value" to "range during last second"
+* in Vista and Windows 7 Direct3D9Ex is used now (no lost devices, anymore)
+* changed luma upsampling default to Lanczos4
+
+v0.12
+* rewrite of about 75% of the code
+* loads of bug fixes
+* improvements for DVD playback (macrovision complaints etc)
+* improvements for frame stepping during paused playback
+* re-added rendering stats to OSD
+
+v0.11
+* fixed: luma resampling settings weren't saved/loaded correctly
+* fixed: on some PCs video startup took several seconds
+* updated cr3dlut to v2.2
+
+v0.10
+* added first (buggy) version of smooth motion rendering
+* added uploading queue (up to 8 frames)
+* added rendering queue (up to 8 frames)
+* added information about dropped and delayed frames to OSD
+* removed GPU rendering times from OSD
+* added (buggy) frame stepping support
+* modified DVD / macrovision handling slightly
+* display refresh rate detection should no longer produce incorrect results
+* added separate controls for luma upscaling and downscaling
+* fixed: image was sometimes offset in 1:1 mode in ZoomPlayer
+
+v0.9
+* bigger part of initialization is done before playback is allowed to start
+* if Direct3D device is lost and can't be recovered, playback is paused
+* if paused playback is restarted, madVR tries to recover lost device again
+* decoders are now forced to deliver video width which is devidable by 16
+* reduced CPU consumption a bit
+* changed video -> GPU uploading method -> lower GPU rendering times (?)
+* OSD lists texture uploading times again
+* OSD now only increases CPU consumption in detailed mode (2x Ctrl+J)
+* external shader*.dat files are gone, compiler 41 is now always used
+* when final VSync estimate if off a lot, a file "vsync.dat" is created
+* fixed: 3dlut colors were ever so slightly incorrect
+* fixed: shader math colors were slightly incorrect
+
+v0.8
+* fixed: only the first movie played fine, a 2nd movie stayed black
+* 3dlut creation should work again now (broken in v0.7)
+* minor improvement in display refresh rate calculation
+* some minor changes in window management
+
+v0.7
+* fixed: video size/position was incorrect with Zoom Player & CoreAVC
+* precompiled shaders are now loaded from "shaders.dat" (for testing)
+* various shaders files are shipped created with different compiler versions
+* OSD now shows 4 different display refresh rate estimates (for testing)
+* fixed: with bilinear chroma resampling luma was always resampled, too
+
+v0.6
+* fixed: only the first movie played fine, a 2nd movie stayed black
+
+v0.5
+* DVD playback should work now, too
+* improved switching times between fullscreen and windowed mode
+* improved startup time
+* chroma samples are now placed left instead of center luma
+* added settings control to switch between TV and PC output levels
+* added settings control to enable/disable 3dlut processing
+* added settings control for selecting chroma resampling filter
+* D3DX9_35.dll is not needed, anymore
+* improved display refresh rate detection calculation
+* 3dlut and settings file routines are using unicode instead of ansi now
+* fixed: aspect ratio calculation truncated instead of rounding
+* fixed: aspect ratio changes in the middle of the movie were ignored
+
+v0.4
+* modified (improved?) initialization order
+* fixed: aspect ratio was incorrect with some sources
+* added Lanczos8 resampling option (but I don't recommend to use it)
+* changed the way the GPU textures are updated
+
+v0.3
+* lowered CPU consumption a bit
+* playback start is now delayed until 3dlut file is fully loaded
+* during initialization madVR posts a message to the screen
+* added OSD (on screen display) with some stats, can be toggled with Ctrl+J
+* added display refresh rate detection
+* added GPU rendering time measurements
+* Direct3D resources are completely freed on exit now
+* errors are now properly handled and displayed
+* if 10bit textures are not available, 8bit textures are used instead
+* fixed: window size in GraphEdit was slightly too small
+* missing 3dlut files are now automatically created by calling "cr3dlut"
+* depending on source resolution "SD.3dlut" or "HD.3dlut" is loaded now
+* renamed "madVideoRenderer" to "madVR" everywhere
+* settings are now saved to (and read from) "settings.ini" file
+* improvement for playing video on secondary monitor (not tested)
+
+v0.2
+* fixed: colors were not fully correct
+* improved install/uninstall
+
+v0.1
+* initial beta release
