@@ -1,4 +1,4 @@
-# PotPlayer + DmitriRender + LAV Filters + madVR 终极免续期绿化整合版
+﻿# PotPlayer + DmitriRender + LAV Filters + madVR 终极免续期绿化整合版
 
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010%20%2F%2011%20(64--bit)-blue.svg)](#)
 [![PotPlayer](https://img.shields.io/badge/PotPlayer-64--bit-orange.svg)](#)
@@ -132,3 +132,4 @@ PotPlayer_GreenPackage/
 ## ⚖️ 免责声明 (Disclaimer)
 
 本项目仅用于技术交流与个人多媒体调优测试。涉及的第三方商业/闭源组件（DmitriRender、PotPlayer、LAV Filters、madVR）版权均归各自原始著作权人所有。请支持正版软件。
+
