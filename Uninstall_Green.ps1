@@ -39,19 +39,30 @@ if (Test-Path (Join-Path $madDir "madVR64.ax")) {
     Pop-Location
 }
 
-# 4. Remove file associations and Desktop shortcut
+# 4. Remove file associations and Desktop shortcut (High-Speed Batch Mode)
 Write-Host "[4/5] 正在清理文件关联与桌面快捷方式..." -ForegroundColor Yellow
 $desktopPath = [Environment]::GetFolderPath('Desktop')
 Remove-Item -Path (Join-Path $desktopPath "PotPlayer.lnk") -Force -ErrorAction SilentlyContinue
 Remove-Item -Path (Join-Path $desktopPath "PotPlayer (插帧免续期版).lnk") -Force -ErrorAction SilentlyContinue
 
+$sb = New-Object System.Text.StringBuilder
+[void]$sb.AppendLine("Windows Registry Editor Version 5.00`r`n")
 $exts = @('mp4', 'mkv', 'avi', 'flv', 'mov', 'wmv', 'ts', 'webm', 'm4v', 'rmvb', 'mp3', 'flac', 'wav', 'aac', 'm4a', 'iso', 'vob', 'mpg', 'mpeg', '3gp')
 foreach ($ext in $exts) {
-    Remove-Item -Path "HKCU:\Software\Classes\PotPlayerMini64.$ext" -Recurse -Force -ErrorAction SilentlyContinue
-    Remove-Item -Path "HKLM:\SOFTWARE\Classes\PotPlayerMini64.$ext" -Recurse -Force -ErrorAction SilentlyContinue
+    [void]$sb.AppendLine(("[-HKEY_CURRENT_USER\Software\Classes\PotPlayerMini64.{0}]" -f $ext))
+    [void]$sb.AppendLine(("[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\PotPlayerMini64.{0}]" -f $ext))
 }
-Remove-Item -Path "HKCU:\Software\Classes\Applications\PotPlayerMini64.exe" -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item -Path "HKCU:\Software\Classes\Applications\RunAsDate.exe" -Recurse -Force -ErrorAction SilentlyContinue
+[void]$sb.AppendLine("[-HKEY_CURRENT_USER\Software\Classes\Applications\PotPlayerMini64.exe]")
+[void]$sb.AppendLine("[-HKEY_CURRENT_USER\Software\Classes\Applications\RunAsDate.exe]")
+[void]$sb.AppendLine("[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Applications\PotPlayerMini64.exe]")
+[void]$sb.AppendLine("[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Applications\RunAsDate.exe]")
+[void]$sb.AppendLine("[-HKEY_CURRENT_USER\Software\Daum\PotPlayerMini64\Capabilities]")
+[void]$sb.AppendLine("[-HKEY_CURRENT_USER\Software\Daum\PotPlayer64_Core]")
+
+$tempUninstReg = Join-Path $env:TEMP "PotPlayer_Uninst.reg"
+[System.IO.File]::WriteAllText($tempUninstReg, $sb.ToString(), [System.Text.Encoding]::Unicode)
+& reg.exe import $tempUninstReg 2>$null | Out-Null
+Remove-Item $tempUninstReg -Force -ErrorAction SilentlyContinue
 
 # 5. Clean DmitriRender AppData, Core binaries and Registry
 Write-Host "[5/5] 正在清理 DmitriRender 注册表与缓存..." -ForegroundColor Yellow
@@ -62,21 +73,9 @@ Remove-Item -Path (Join-Path $potDir "Patch\Launcher.*") -Force -ErrorAction Sil
 Remove-Item -Path (Join-Path $potDir "Playlist\PotPlayer64_Core.dpl") -Force -ErrorAction SilentlyContinue
 Remove-Item -Path $appDataDmitri -Recurse -Force -ErrorAction SilentlyContinue
 
-# Flush icon cache
+# Fast shell refresh
 & ie4uinit.exe -show 2>$null
 & rundll32.exe user32.dll,UpdatePerUserSystemParameters 1, True 2>$null
-try {
-$typeDef = @'
-using System;
-using System.Runtime.InteropServices;
-public class ShellNotifier {
-    [DllImport("shell32.dll")]
-    public static extern void SHChangeNotify(int wEventId, uint uFlags, IntPtr dwItem1, IntPtr dwItem2);
-}
-'@
-Add-Type -TypeDefinition $typeDef -ErrorAction SilentlyContinue
-[ShellNotifier]::SHChangeNotify(0x08000000, 0, [IntPtr]::Zero, [IntPtr]::Zero)
-} catch {}
 
 Write-Host "========================================================" -ForegroundColor Green
 Write-Host "  卸载完成！所有滤镜、计划任务与关联已安全清理。" -ForegroundColor Green

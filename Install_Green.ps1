@@ -112,7 +112,7 @@ try {
     Set-ScheduledTask -TaskName "DmitriRender_AutoReset" -Settings $settings -ErrorAction SilentlyContinue | Out-Null
 } catch {}
 
-# 7. Create Desktop Shortcut and File Associations
+# 7. Create Desktop Shortcut and File Associations (High-Speed Batch Mode)
 Write-Host "[7/7] 正在创建桌面快捷方式及关联媒体文件格式..." -ForegroundColor Yellow
 
 $wsh = New-Object -ComObject WScript.Shell
@@ -127,53 +127,9 @@ $shortcut.Description = "PotPlayer 64-bit with DmitriRender 60FPS"
 $shortcut.Save()
 
 $cmd = "`"$runAsDate`" /immediate /movetime Hours:-17520 `"$potExe`" `"%1`""
-
-# Register Applications command & official icon
-$appsToRegister = @("PotPlayerMini64.exe", "RunAsDate.exe")
-foreach ($app in $appsToRegister) {
-    $appKey = "HKCU:\Software\Classes\Applications\$app"
-    if (-not (Test-Path $appKey)) { New-Item -Path $appKey -Force | Out-Null }
-    Set-ItemProperty -Path $appKey -Name "(Default)" -Value "PotPlayer"
-    Set-ItemProperty -Path $appKey -Name "FriendlyAppName" -Value "PotPlayer"
-    
-    $appIconKey = "$appKey\DefaultIcon"
-    if (-not (Test-Path $appIconKey)) { New-Item -Path $appIconKey -Force | Out-Null }
-    Set-ItemProperty -Path $appIconKey -Name "(Default)" -Value "$potExe,0"
-    
-    $appOpenCmdKey = "$appKey\shell\open\command"
-    if (-not (Test-Path $appOpenCmdKey)) { New-Item -Path $appOpenCmdKey -Force | Out-Null }
-    Set-ItemProperty -Path $appOpenCmdKey -Name "(Default)" -Value $cmd
-
-    $appPlayCmdKey = "$appKey\shell\play\command"
-    if (-not (Test-Path $appPlayCmdKey)) { New-Item -Path $appPlayCmdKey -Force | Out-Null }
-    Set-ItemProperty -Path $appPlayCmdKey -Name "(Default)" -Value $cmd
-    
-    Remove-Item -Path "$appKey\shell\open\DropTarget" -Force -ErrorAction SilentlyContinue
-    Remove-Item -Path "$appKey\shell\play\DropTarget" -Force -ErrorAction SilentlyContinue
-    
-    # Also clean and update HKLM if running with admin rights
-    $hklmApp = "HKLM:\SOFTWARE\Classes\Applications\$app"
-    if (Test-Path $hklmApp) {
-        Set-ItemProperty -Path "$hklmApp\shell\open\command" -Name "(Default)" -Value $cmd -ErrorAction SilentlyContinue
-        Set-ItemProperty -Path "$hklmApp\shell\play\command" -Name "(Default)" -Value $cmd -ErrorAction SilentlyContinue
-        Remove-Item -Path "$hklmApp\shell\open\DropTarget" -Force -ErrorAction SilentlyContinue
-        Remove-Item -Path "$hklmApp\shell\play\DropTarget" -Force -ErrorAction SilentlyContinue
-    }
-}
-
-# Register Capabilities for Windows Default Apps registry
-$capKey = "HKCU:\Software\Daum\PotPlayerMini64\Capabilities"
-if (-not (Test-Path $capKey)) { New-Item -Path $capKey -Force | Out-Null }
-Set-ItemProperty -Path $capKey -Name "ApplicationName" -Value "PotPlayer"
-Set-ItemProperty -Path $capKey -Name "ApplicationDescription" -Value "PotPlayer 64-bit 终极免续期插帧绿化版"
-Set-ItemProperty -Path $capKey -Name "ApplicationIcon" -Value "$potExe,0"
-
-$regAppKey = "HKCU:\Software\RegisteredApplications"
-if (-not (Test-Path $regAppKey)) { New-Item -Path $regAppKey -Force | Out-Null }
-Set-ItemProperty -Path $regAppKey -Name "PotPlayerMini64" -Value "Software\Daum\PotPlayerMini64\Capabilities"
-
-$capAssocKey = "$capKey\FileAssociations"
-if (-not (Test-Path $capAssocKey)) { New-Item -Path $capAssocKey -Force | Out-Null }
+$escapedCmd = $cmd.Replace('\', '\\').Replace('"', '\"')
+$escapedIcons = $iconsDll.Replace('\', '\\')
+$escapedPot = $potExe.Replace('\', '\\')
 
 $extIcons = @{
     'mp4' = 13; 'mkv' = 15; 'avi' = 1; 'flv' = 21; 'mov' = 20;
@@ -182,80 +138,81 @@ $extIcons = @{
     'iso' = 17; 'vob' = 18; 'mpg' = 3; 'mpeg' = 3; '3gp' = 28
 }
 
+$sb = New-Object System.Text.StringBuilder
+[void]$sb.AppendLine("Windows Registry Editor Version 5.00`r`n")
+
+# Capabilities
+[void]$sb.AppendLine("[HKEY_CURRENT_USER\Software\Daum\PotPlayerMini64\Capabilities]")
+[void]$sb.AppendLine('"ApplicationName"="PotPlayer"')
+[void]$sb.AppendLine('"ApplicationDescription"="PotPlayer 64-bit 终极免续期插帧绿化版"')
+[void]$sb.AppendLine(('"ApplicationIcon"="{0},0"' -f $escapedPot))
+[void]$sb.AppendLine("`r`n[HKEY_CURRENT_USER\Software\RegisteredApplications]")
+[void]$sb.AppendLine('"PotPlayerMini64"="Software\\Daum\\PotPlayerMini64\\Capabilities"`r`n')
+
+[void]$sb.AppendLine("[HKEY_CURRENT_USER\Software\Daum\PotPlayerMini64\Capabilities\FileAssociations]")
+foreach ($ext in $extIcons.Keys) {
+    [void]$sb.AppendLine(('".{0}"="PotPlayerMini64.{0}"' -f $ext))
+}
+[void]$sb.AppendLine("")
+
+# Applications registration & DropTarget purge
+foreach ($app in @("PotPlayerMini64.exe", "RunAsDate.exe")) {
+    foreach ($root in @("HKEY_CURRENT_USER\Software\Classes\Applications", "HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Applications")) {
+        [void]$sb.AppendLine(('[{0}\{1}]' -f $root, $app))
+        [void]$sb.AppendLine('@="PotPlayer"')
+        [void]$sb.AppendLine('"FriendlyAppName"="PotPlayer"')
+        [void]$sb.AppendLine(('[{0}\{1}\DefaultIcon]' -f $root, $app))
+        [void]$sb.AppendLine(('@="{0},0"' -f $escapedPot))
+        [void]$sb.AppendLine(('[{0}\{1}\shell\open\command]' -f $root, $app))
+        [void]$sb.AppendLine(('@="{0}"' -f $escapedCmd))
+        [void]$sb.AppendLine(('[{0}\{1}\shell\play\command]' -f $root, $app))
+        [void]$sb.AppendLine(('@="{0}"' -f $escapedCmd))
+        [void]$sb.AppendLine(('[-{0}\{1}\shell\open\DropTarget]' -f $root, $app))
+        [void]$sb.AppendLine(('[-{0}\{1}\shell\play\DropTarget]' -f $root, $app))
+        [void]$sb.AppendLine("")
+    }
+}
+
+# Media extensions association & DropTarget purge
 foreach ($ext in $extIcons.Keys) {
     $progId = "PotPlayerMini64.$ext"
     $iconIdx = $extIcons[$ext]
-    
-    Set-ItemProperty -Path $capAssocKey -Name ".$ext" -Value $progId
-    
-    $progKey = "HKCU:\Software\Classes\$progId"
-    if (-not (Test-Path $progKey)) { New-Item -Path $progKey -Force | Out-Null }
-    Set-ItemProperty -Path $progKey -Name "(Default)" -Value "$ext 媒体文件"
-    
-    $iconKey = "$progKey\DefaultIcon"
-    if (-not (Test-Path $iconKey)) { New-Item -Path $iconKey -Force | Out-Null }
-    Set-ItemProperty -Path $iconKey -Name "(Default)" -Value "$iconsDll,$iconIdx"
-    
-    $shellKey = "$progKey\shell"
-    if (-not (Test-Path $shellKey)) { New-Item -Path $shellKey -Force | Out-Null }
-    Set-ItemProperty -Path $shellKey -Name "(Default)" -Value "open"
-    
-    $openCmdKey = "$shellKey\open\command"
-    if (-not (Test-Path $openCmdKey)) { New-Item -Path $openCmdKey -Force | Out-Null }
-    Set-ItemProperty -Path $openCmdKey -Name "(Default)" -Value $cmd
-    
-    $playCmdKey = "$shellKey\play\command"
-    if (-not (Test-Path $playCmdKey)) { New-Item -Path $playCmdKey -Force | Out-Null }
-    Set-ItemProperty -Path $playCmdKey -Name "(Default)" -Value $cmd
 
-    # Clean DropTarget in HKCU
-    Remove-Item -Path "$shellKey\open\DropTarget" -Force -ErrorAction SilentlyContinue
-    Remove-Item -Path "$shellKey\play\DropTarget" -Force -ErrorAction SilentlyContinue
-    Remove-Item -Path "$shellKey\Enqueue\DropTarget" -Force -ErrorAction SilentlyContinue
-
-    # Clean HKLM if running elevated
-    $hklmProgKey = "HKLM:\SOFTWARE\Classes\$progId"
-    if (Test-Path $hklmProgKey) {
-        $hklmShell = "$hklmProgKey\shell"
-        Set-ItemProperty -Path $hklmShell -Name "(Default)" -Value "open" -ErrorAction SilentlyContinue
-        Set-ItemProperty -Path "$hklmShell\open\command" -Name "(Default)" -Value $cmd -ErrorAction SilentlyContinue
-        Set-ItemProperty -Path "$hklmShell\play\command" -Name "(Default)" -Value $cmd -ErrorAction SilentlyContinue
-        Remove-Item -Path "$hklmShell\open\DropTarget" -Force -ErrorAction SilentlyContinue
-        Remove-Item -Path "$hklmShell\play\DropTarget" -Force -ErrorAction SilentlyContinue
-        Remove-Item -Path "$hklmShell\Enqueue\DropTarget" -Force -ErrorAction SilentlyContinue
+    foreach ($root in @("HKEY_CURRENT_USER\Software\Classes", "HKEY_LOCAL_MACHINE\SOFTWARE\Classes")) {
+        [void]$sb.AppendLine(('[{0}\{1}]' -f $root, $progId))
+        [void]$sb.AppendLine(('@="{0} 媒体文件"' -f $ext))
+        [void]$sb.AppendLine(('[{0}\{1}\DefaultIcon]' -f $root, $progId))
+        [void]$sb.AppendLine(('@="{0},{1}"' -f $escapedIcons, $iconIdx))
+        [void]$sb.AppendLine(('[{0}\{1}\shell]' -f $root, $progId))
+        [void]$sb.AppendLine('@="open"')
+        [void]$sb.AppendLine(('[{0}\{1}\shell\open\command]' -f $root, $progId))
+        [void]$sb.AppendLine(('@="{0}"' -f $escapedCmd))
+        [void]$sb.AppendLine(('[{0}\{1}\shell\play\command]' -f $root, $progId))
+        [void]$sb.AppendLine(('@="{0}"' -f $escapedCmd))
+        [void]$sb.AppendLine(('[-{0}\{1}\shell\open\DropTarget]' -f $root, $progId))
+        [void]$sb.AppendLine(('[-{0}\{1}\shell\play\DropTarget]' -f $root, $progId))
+        [void]$sb.AppendLine(('[-{0}\{1}\shell\Enqueue\DropTarget]' -f $root, $progId))
+        [void]$sb.AppendLine("")
     }
-    
-    $extKey = "HKCU:\Software\Classes\.$ext"
-    if (-not (Test-Path $extKey)) { New-Item -Path $extKey -Force | Out-Null }
-    Set-ItemProperty -Path $extKey -Name "(Default)" -Value $progId
-    
-    # Configure OpenWithList to make PotPlayer the default chosen application
-    $owListKey = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.$ext\OpenWithList"
-    if (-not (Test-Path $owListKey)) { New-Item -Path $owListKey -Force | Out-Null }
-    Set-ItemProperty -Path $owListKey -Name "a" -Value "PotPlayerMini64.exe" -Force
-    Set-ItemProperty -Path $owListKey -Name "MRUList" -Value "a" -Force
-    
-    $owProgKey = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.$ext\OpenWithProgids"
-    if (-not (Test-Path $owProgKey)) { New-Item -Path $owProgKey -Force | Out-Null }
-    Set-ItemProperty -Path $owProgKey -Name $progId -Value ([byte[]]@()) -Force
-    Set-ItemProperty -Path $owProgKey -Name "Applications\PotPlayerMini64.exe" -Value ([byte[]]@()) -Force
+
+    [void]$sb.AppendLine(('[HKEY_CURRENT_USER\Software\Classes\.{0}]' -f $ext))
+    [void]$sb.AppendLine(('@="{0}"' -f $progId))
+    [void]$sb.AppendLine(('`r`n[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.{0}\OpenWithList]' -f $ext))
+    [void]$sb.AppendLine('"a"="PotPlayerMini64.exe"')
+    [void]$sb.AppendLine('"MRUList"="a"')
+    [void]$sb.AppendLine(('`r`n[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.{0}\OpenWithProgids]' -f $ext))
+    [void]$sb.AppendLine(('"{0}"=hex:' -f $progId))
+    [void]$sb.AppendLine('"Applications\\PotPlayerMini64.exe"=hex:`r`n')
 }
 
-# Flush icon cache
+$tempAssocReg = Join-Path $env:TEMP "PotPlayer_Assoc.reg"
+[System.IO.File]::WriteAllText($tempAssocReg, $sb.ToString(), [System.Text.Encoding]::Unicode)
+& reg.exe import $tempAssocReg 2>$null | Out-Null
+Remove-Item $tempAssocReg -Force -ErrorAction SilentlyContinue
+
+# Fast shell refresh
 & ie4uinit.exe -show 2>$null
 & rundll32.exe user32.dll,UpdatePerUserSystemParameters 1, True 2>$null
-try {
-$typeDef = @'
-using System;
-using System.Runtime.InteropServices;
-public class ShellNotifier {
-    [DllImport("shell32.dll")]
-    public static extern void SHChangeNotify(int wEventId, uint uFlags, IntPtr dwItem1, IntPtr dwItem2);
-}
-'@
-Add-Type -TypeDefinition $typeDef -ErrorAction SilentlyContinue
-[ShellNotifier]::SHChangeNotify(0x08000000, 0, [IntPtr]::Zero, [IntPtr]::Zero)
-} catch {}
 
 Write-Host "========================================================" -ForegroundColor Green
 Write-Host "  安装完成！PotPlayer 绿化版已就绪。" -ForegroundColor Green
