@@ -72,6 +72,11 @@ if (Test-Path $templateReg) {
     $finalReg | Set-Content $tempRegFile -Encoding Unicode
     & reg.exe import $tempRegFile | Out-Null
     Remove-Item $tempRegFile -Force -ErrorAction SilentlyContinue
+    
+    # Sync configuration to both PotPlayerMini64 and PotPlayer64_Core keys
+    if (Test-Path "HKCU:\Software\Daum\PotPlayerMini64") {
+        Copy-Item -Path "HKCU:\Software\Daum\PotPlayerMini64" -Destination "HKCU:\Software\Daum\PotPlayer64_Core" -Recurse -Force -ErrorAction SilentlyContinue
+    }
 }
 
 # 5. Initialize StarForce License & Watermark Bypass
@@ -79,9 +84,9 @@ Write-Host "[5/7] 正在初始化时间伪装及免水印环境..." -ForegroundC
 Remove-Item -Path $potPatch -Force -ErrorAction SilentlyContinue
 
 if (Test-Path $sampleVideo) {
-    Start-Process -FilePath $runAsDate -ArgumentList "/movetime Hours:-17520 `"$potExe`" `"$sampleVideo`"" -WindowStyle Hidden
+    Start-Process -FilePath $potExe -ArgumentList "`"$sampleVideo`"" -WindowStyle Hidden
 } else {
-    Start-Process -FilePath $runAsDate -ArgumentList "/movetime Hours:-17520 `"$potExe`"" -WindowStyle Hidden
+    Start-Process -FilePath $potExe -WindowStyle Hidden
 }
 Start-Sleep -Seconds 6
 Get-Process | Where-Object { $_.ProcessName -match "PotPlayer|pcnsl" } | Stop-Process -Force -ErrorAction SilentlyContinue
@@ -114,17 +119,17 @@ $wsh = New-Object -ComObject WScript.Shell
 $desktopPath = [Environment]::GetFolderPath('Desktop')
 Remove-Item -Path (Join-Path $desktopPath "PotPlayer (插帧免续期版).lnk") -Force -ErrorAction SilentlyContinue
 $shortcut = $wsh.CreateShortcut((Join-Path $desktopPath "PotPlayer.lnk"))
-$shortcut.TargetPath = $runAsDate
-$shortcut.Arguments = "/movetime Hours:-17520 `"$potExe`""
+$shortcut.TargetPath = $potExe
+$shortcut.Arguments = ""
 $shortcut.WorkingDirectory = $potDir
 $shortcut.IconLocation = "$potExe,0"
 $shortcut.Description = "PotPlayer 64-bit with DmitriRender 60FPS"
 $shortcut.Save()
 
-$cmd = "`"$runAsDate`" /movetime Hours:-17520 `"$potExe`" `"%1`""
+$cmd = "`"$potExe`" `"%1`""
 
 # Register Friendly Name and Official PotPlayer Icon for both entries
-$appsToRegister = @("PotPlayerMini64.exe", "RunAsDate.exe")
+$appsToRegister = @("PotPlayerMini64.exe", "PotPlayer64_Core.exe", "RunAsDate.exe")
 foreach ($app in $appsToRegister) {
     $appKey = "HKCU:\Software\Classes\Applications\$app"
     if (-not (Test-Path $appKey)) { New-Item -Path $appKey -Force | Out-Null }

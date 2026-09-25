@@ -53,6 +53,7 @@ foreach ($ext in $exts) {
 # 5. Clean DmitriRender AppData and Registry
 Write-Host "[5/5] 正在清理 DmitriRender 注册表与缓存..." -ForegroundColor Yellow
 Remove-Item -Path "HKCU:\Software\DmitriRender" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item -Path "HKCU:\Software\Daum\PotPlayer64_Core" -Recurse -Force -ErrorAction SilentlyContinue
 Remove-Item -Path $appDataDmitri -Recurse -Force -ErrorAction SilentlyContinue
 
 try {
