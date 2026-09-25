@@ -20,29 +20,15 @@ $appDataDmitri = Join-Path $env:APPDATA "DmitriRender"
 $lavX64 = Join-Path $potDir "LAVFilters\x64"
 $sampleVideo = Join-Path $potDir "sample.mp4"
 
-# 1. Terminate existing processes
+# 1. Terminate existing processes and clean legacy core files
 Write-Host "[1/7] 正在关闭现有播放器及后台进程..." -ForegroundColor Yellow
-Get-Process | Where-Object { $_.ProcessName -match "PotPlayer|pcnsl|drtm" } | Stop-Process -Force -ErrorAction SilentlyContinue
+Get-Process | Where-Object { $_.ProcessName -match "PotPlayer|pcnsl|drtm|RunAsDate" } | Stop-Process -Force -ErrorAction SilentlyContinue
 Start-Sleep -Seconds 1
 
-# Auto-detect and handle official PotPlayerMini64 updates
-$potCoreExe = Join-Path $potDir "PotPlayer64_Core.exe"
-$patchLauncher = Join-Path $potDir "Patch\Launcher.exe"
-$patchCs = Join-Path $potDir "Patch\Launcher.cs"
-
-if (Test-Path $potExe) {
-    $exeSize = (Get-Item $potExe).Length
-    if ($exeSize -gt 100000) {
-        Write-Host "    检测到官方新版 PotPlayerMini64.exe ($([math]::Round($exeSize/1MB, 2)) MB)，正在自动转化为核心组件..." -ForegroundColor Green
-        Copy-Item -Path $potExe -Destination $potCoreExe -Force
-        if (Test-Path $patchLauncher) {
-            Copy-Item -Path $patchLauncher -Destination $potExe -Force
-        } elseif (Test-Path $patchCs) {
-            & "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /target:winexe /platform:x64 /win32icon:"$potDir\potplayer.ico" /out:"$potExe" "$patchCs" | Out-Null
-        }
-        Write-Host "    已自动部署免续期启动加载器并保留新版核心！" -ForegroundColor Green
-    }
-}
+Remove-Item -Path (Join-Path $potDir "PotPlayer64_Core.exe") -Force -ErrorAction SilentlyContinue
+Remove-Item -Path (Join-Path $potDir "Patch\Launcher.*") -Force -ErrorAction SilentlyContinue
+Remove-Item -Path (Join-Path $potDir "Playlist\PotPlayer64_Core.dpl") -Force -ErrorAction SilentlyContinue
+Remove-Item -Path "HKCU:\Software\Daum\PotPlayer64_Core" -Recurse -Force -ErrorAction SilentlyContinue
 
 # 2. Deploy DmitriRender to %APPDATA%
 Write-Host "[2/7] 正在部署 DmitriRender 插帧核心组件..." -ForegroundColor Yellow
@@ -91,11 +77,6 @@ if (Test-Path $templateReg) {
     $finalReg | Set-Content $tempRegFile -Encoding Unicode
     & reg.exe import $tempRegFile | Out-Null
     Remove-Item $tempRegFile -Force -ErrorAction SilentlyContinue
-    
-    # Sync configuration to both PotPlayerMini64 and PotPlayer64_Core keys
-    if (Test-Path "HKCU:\Software\Daum\PotPlayerMini64") {
-        Copy-Item -Path "HKCU:\Software\Daum\PotPlayerMini64" -Destination "HKCU:\Software\Daum\PotPlayer64_Core" -Recurse -Force -ErrorAction SilentlyContinue
-    }
 }
 
 # 5. Initialize StarForce License & Watermark Bypass
@@ -103,12 +84,12 @@ Write-Host "[5/7] 正在初始化时间伪装及免水印环境..." -ForegroundC
 Remove-Item -Path $potPatch -Force -ErrorAction SilentlyContinue
 
 if (Test-Path $sampleVideo) {
-    Start-Process -FilePath $potExe -ArgumentList "`"$sampleVideo`"" -WindowStyle Hidden
+    Start-Process -FilePath $runAsDate -ArgumentList "/immediate /movetime Hours:-17520 `"$potExe`" `"$sampleVideo`"" -WindowStyle Hidden
 } else {
-    Start-Process -FilePath $potExe -WindowStyle Hidden
+    Start-Process -FilePath $runAsDate -ArgumentList "/immediate /movetime Hours:-17520 `"$potExe`"" -WindowStyle Hidden
 }
 Start-Sleep -Seconds 6
-Get-Process | Where-Object { $_.ProcessName -match "PotPlayer|pcnsl" } | Stop-Process -Force -ErrorAction SilentlyContinue
+Get-Process | Where-Object { $_.ProcessName -match "PotPlayer|pcnsl|drtm" } | Stop-Process -Force -ErrorAction SilentlyContinue
 Start-Sleep -Seconds 1
 
 if (Test-Path $patchSrc) {
@@ -138,17 +119,17 @@ $wsh = New-Object -ComObject WScript.Shell
 $desktopPath = [Environment]::GetFolderPath('Desktop')
 Remove-Item -Path (Join-Path $desktopPath "PotPlayer (插帧免续期版).lnk") -Force -ErrorAction SilentlyContinue
 $shortcut = $wsh.CreateShortcut((Join-Path $desktopPath "PotPlayer.lnk"))
-$shortcut.TargetPath = $potExe
-$shortcut.Arguments = ""
+$shortcut.TargetPath = $runAsDate
+$shortcut.Arguments = "/immediate /movetime Hours:-17520 `"$potExe`""
 $shortcut.WorkingDirectory = $potDir
 $shortcut.IconLocation = "$potExe,0"
 $shortcut.Description = "PotPlayer 64-bit with DmitriRender 60FPS"
 $shortcut.Save()
 
-$cmd = "`"$potExe`" `"%1`""
+$cmd = "`"$runAsDate`" /immediate /movetime Hours:-17520 `"$potExe`" `"%1`""
 
-# Register Friendly Name and Official PotPlayer Icon for both entries
-$appsToRegister = @("PotPlayerMini64.exe", "PotPlayer64_Core.exe", "RunAsDate.exe")
+# Register Applications command & official icon
+$appsToRegister = @("PotPlayerMini64.exe", "RunAsDate.exe")
 foreach ($app in $appsToRegister) {
     $appKey = "HKCU:\Software\Classes\Applications\$app"
     if (-not (Test-Path $appKey)) { New-Item -Path $appKey -Force | Out-Null }
@@ -159,9 +140,25 @@ foreach ($app in $appsToRegister) {
     if (-not (Test-Path $appIconKey)) { New-Item -Path $appIconKey -Force | Out-Null }
     Set-ItemProperty -Path $appIconKey -Name "(Default)" -Value "$potExe,0"
     
-    $appCmdKey = "$appKey\shell\open\command"
-    if (-not (Test-Path $appCmdKey)) { New-Item -Path $appCmdKey -Force | Out-Null }
-    Set-ItemProperty -Path $appCmdKey -Name "(Default)" -Value $cmd
+    $appOpenCmdKey = "$appKey\shell\open\command"
+    if (-not (Test-Path $appOpenCmdKey)) { New-Item -Path $appOpenCmdKey -Force | Out-Null }
+    Set-ItemProperty -Path $appOpenCmdKey -Name "(Default)" -Value $cmd
+
+    $appPlayCmdKey = "$appKey\shell\play\command"
+    if (-not (Test-Path $appPlayCmdKey)) { New-Item -Path $appPlayCmdKey -Force | Out-Null }
+    Set-ItemProperty -Path $appPlayCmdKey -Name "(Default)" -Value $cmd
+    
+    Remove-Item -Path "$appKey\shell\open\DropTarget" -Force -ErrorAction SilentlyContinue
+    Remove-Item -Path "$appKey\shell\play\DropTarget" -Force -ErrorAction SilentlyContinue
+    
+    # Also clean and update HKLM if running with admin rights
+    $hklmApp = "HKLM:\SOFTWARE\Classes\Applications\$app"
+    if (Test-Path $hklmApp) {
+        Set-ItemProperty -Path "$hklmApp\shell\open\command" -Name "(Default)" -Value $cmd -ErrorAction SilentlyContinue
+        Set-ItemProperty -Path "$hklmApp\shell\play\command" -Name "(Default)" -Value $cmd -ErrorAction SilentlyContinue
+        Remove-Item -Path "$hklmApp\shell\open\DropTarget" -Force -ErrorAction SilentlyContinue
+        Remove-Item -Path "$hklmApp\shell\play\DropTarget" -Force -ErrorAction SilentlyContinue
+    }
 }
 
 # Register Capabilities for Windows Default Apps registry
@@ -199,9 +196,34 @@ foreach ($ext in $extIcons.Keys) {
     if (-not (Test-Path $iconKey)) { New-Item -Path $iconKey -Force | Out-Null }
     Set-ItemProperty -Path $iconKey -Name "(Default)" -Value "$iconsDll,$iconIdx"
     
-    $openCmdKey = "$progKey\shell\open\command"
+    $shellKey = "$progKey\shell"
+    if (-not (Test-Path $shellKey)) { New-Item -Path $shellKey -Force | Out-Null }
+    Set-ItemProperty -Path $shellKey -Name "(Default)" -Value "open"
+    
+    $openCmdKey = "$shellKey\open\command"
     if (-not (Test-Path $openCmdKey)) { New-Item -Path $openCmdKey -Force | Out-Null }
     Set-ItemProperty -Path $openCmdKey -Name "(Default)" -Value $cmd
+    
+    $playCmdKey = "$shellKey\play\command"
+    if (-not (Test-Path $playCmdKey)) { New-Item -Path $playCmdKey -Force | Out-Null }
+    Set-ItemProperty -Path $playCmdKey -Name "(Default)" -Value $cmd
+
+    # Clean DropTarget in HKCU
+    Remove-Item -Path "$shellKey\open\DropTarget" -Force -ErrorAction SilentlyContinue
+    Remove-Item -Path "$shellKey\play\DropTarget" -Force -ErrorAction SilentlyContinue
+    Remove-Item -Path "$shellKey\Enqueue\DropTarget" -Force -ErrorAction SilentlyContinue
+
+    # Clean HKLM if running elevated
+    $hklmProgKey = "HKLM:\SOFTWARE\Classes\$progId"
+    if (Test-Path $hklmProgKey) {
+        $hklmShell = "$hklmProgKey\shell"
+        Set-ItemProperty -Path $hklmShell -Name "(Default)" -Value "open" -ErrorAction SilentlyContinue
+        Set-ItemProperty -Path "$hklmShell\open\command" -Name "(Default)" -Value $cmd -ErrorAction SilentlyContinue
+        Set-ItemProperty -Path "$hklmShell\play\command" -Name "(Default)" -Value $cmd -ErrorAction SilentlyContinue
+        Remove-Item -Path "$hklmShell\open\DropTarget" -Force -ErrorAction SilentlyContinue
+        Remove-Item -Path "$hklmShell\play\DropTarget" -Force -ErrorAction SilentlyContinue
+        Remove-Item -Path "$hklmShell\Enqueue\DropTarget" -Force -ErrorAction SilentlyContinue
+    }
     
     $extKey = "HKCU:\Software\Classes\.$ext"
     if (-not (Test-Path $extKey)) { New-Item -Path $extKey -Force | Out-Null }
@@ -237,9 +259,9 @@ Add-Type -TypeDefinition $typeDef -ErrorAction SilentlyContinue
 
 Write-Host "========================================================" -ForegroundColor Green
 Write-Host "  安装完成！PotPlayer 绿化版已就绪。" -ForegroundColor Green
-Write-Host "  - 默认视频播放器: 已关联 20 种媒体格式" -ForegroundColor Green
-Write-Host "  - 播放器图标: 官方高清矢量图标已全局生效 (无 RunAsDate 图标)" -ForegroundColor Green
-Write-Host "  - 动态时间欺骗: -17520小时 (免续期)" -ForegroundColor Green
+Write-Host "  - 默认视频播放器: 已关联 20 种媒体格式 (原版/升级覆盖均直接生效)" -ForegroundColor Green
+Write-Host "  - 播放器图标: 官方高清矢量图标已全局生效" -ForegroundColor Green
+Write-Host "  - 动态时间欺骗: -17520小时 (免续期，支持双击直接打开与拖入播放)" -ForegroundColor Green
 Write-Host "  - 后台静默续期任务: DmitriRender_AutoReset (每20天下午15:00自动维护)" -ForegroundColor Green
 Write-Host "  - DmitriRender 插帧 + 去水印: 已生效" -ForegroundColor Green
 Write-Host "========================================================" -ForegroundColor Green

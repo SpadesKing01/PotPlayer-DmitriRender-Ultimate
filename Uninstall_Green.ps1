@@ -13,7 +13,7 @@ $lavX64 = Join-Path $potDir "LAVFilters\x64"
 
 # 1. Stop active processes
 Write-Host "[1/5] 正在关闭相关进程..." -ForegroundColor Yellow
-Get-Process | Where-Object { $_.ProcessName -match "PotPlayer|pcnsl|drtm" } | Stop-Process -Force -ErrorAction SilentlyContinue
+Get-Process | Where-Object { $_.ProcessName -match "PotPlayer|pcnsl|drtm|RunAsDate" } | Stop-Process -Force -ErrorAction SilentlyContinue
 
 # 2. Remove scheduled task
 Write-Host "[2/5] 正在移除后台自动续期计划任务..." -ForegroundColor Yellow
@@ -48,29 +48,36 @@ Remove-Item -Path (Join-Path $desktopPath "PotPlayer (插帧免续期版).lnk") 
 $exts = @('mp4', 'mkv', 'avi', 'flv', 'mov', 'wmv', 'ts', 'webm', 'm4v', 'rmvb', 'mp3', 'flac', 'wav', 'aac', 'm4a', 'iso', 'vob', 'mpg', 'mpeg', '3gp')
 foreach ($ext in $exts) {
     Remove-Item -Path "HKCU:\Software\Classes\PotPlayerMini64.$ext" -Recurse -Force -ErrorAction SilentlyContinue
+    Remove-Item -Path "HKLM:\SOFTWARE\Classes\PotPlayerMini64.$ext" -Recurse -Force -ErrorAction SilentlyContinue
 }
+Remove-Item -Path "HKCU:\Software\Classes\Applications\PotPlayerMini64.exe" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item -Path "HKCU:\Software\Classes\Applications\RunAsDate.exe" -Recurse -Force -ErrorAction SilentlyContinue
 
-# 5. Clean DmitriRender AppData and Registry
+# 5. Clean DmitriRender AppData, Core binaries and Registry
 Write-Host "[5/5] 正在清理 DmitriRender 注册表与缓存..." -ForegroundColor Yellow
 Remove-Item -Path "HKCU:\Software\DmitriRender" -Recurse -Force -ErrorAction SilentlyContinue
 Remove-Item -Path "HKCU:\Software\Daum\PotPlayer64_Core" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item -Path (Join-Path $potDir "PotPlayer64_Core.exe") -Force -ErrorAction SilentlyContinue
+Remove-Item -Path (Join-Path $potDir "Patch\Launcher.*") -Force -ErrorAction SilentlyContinue
+Remove-Item -Path (Join-Path $potDir "Playlist\PotPlayer64_Core.dpl") -Force -ErrorAction SilentlyContinue
 Remove-Item -Path $appDataDmitri -Recurse -Force -ErrorAction SilentlyContinue
 
+# Flush icon cache
+& ie4uinit.exe -show 2>$null
+& rundll32.exe user32.dll,UpdatePerUserSystemParameters 1, True 2>$null
 try {
-    $typeDef = @"
-    using System;
-    using System.Runtime.InteropServices;
-    public class ShellNotifier {
-        [DllImport("shell32.dll")]
-        public static extern void SHChangeNotify(int wEventId, uint uFlags, IntPtr dwItem1, IntPtr dwItem2);
-    }
-"@
-    Add-Type -TypeDefinition $typeDef -ErrorAction SilentlyContinue
-    [ShellNotifier]::SHChangeNotify(0x08000000, 0, [IntPtr]::Zero, [IntPtr]::Zero)
+$typeDef = @'
+using System;
+using System.Runtime.InteropServices;
+public class ShellNotifier {
+    [DllImport("shell32.dll")]
+    public static extern void SHChangeNotify(int wEventId, uint uFlags, IntPtr dwItem1, IntPtr dwItem2);
+}
+'@
+Add-Type -TypeDefinition $typeDef -ErrorAction SilentlyContinue
+[ShellNotifier]::SHChangeNotify(0x08000000, 0, [IntPtr]::Zero, [IntPtr]::Zero)
 } catch {}
 
 Write-Host "========================================================" -ForegroundColor Green
 Write-Host "  卸载完成！所有滤镜、计划任务与关联已安全清理。" -ForegroundColor Green
 Write-Host "========================================================" -ForegroundColor Green
-
-
