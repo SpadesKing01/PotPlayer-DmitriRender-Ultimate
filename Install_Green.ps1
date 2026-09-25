@@ -1,4 +1,4 @@
-# Install_Green.ps1 - Automated Setup for Portable PotPlayer + DmitriRender + LAV Filters
+﻿# Install_Green.ps1 - Automated Setup for Portable PotPlayer + DmitriRender + LAV Filters
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $ErrorActionPreference = "Continue"
 
@@ -221,17 +221,18 @@ foreach ($ext in $extIcons.Keys) {
 
 # Flush icon cache
 & ie4uinit.exe -show 2>$null
+& rundll32.exe user32.dll,UpdatePerUserSystemParameters 1, True 2>$null
 try {
-    $typeDef = @"
-    using System;
-    using System.Runtime.InteropServices;
-    public class ShellNotifier {
-        [DllImport("shell32.dll")]
-        public static extern void SHChangeNotify(int wEventId, uint uFlags, IntPtr dwItem1, IntPtr dwItem2);
-    }
-"@
-    Add-Type -TypeDefinition $typeDef -ErrorAction SilentlyContinue
-    [ShellNotifier]::SHChangeNotify(0x08000000, 0, [IntPtr]::Zero, [IntPtr]::Zero)
+$typeDef = @'
+using System;
+using System.Runtime.InteropServices;
+public class ShellNotifier {
+    [DllImport("shell32.dll")]
+    public static extern void SHChangeNotify(int wEventId, uint uFlags, IntPtr dwItem1, IntPtr dwItem2);
+}
+'@
+Add-Type -TypeDefinition $typeDef -ErrorAction SilentlyContinue
+[ShellNotifier]::SHChangeNotify(0x08000000, 0, [IntPtr]::Zero, [IntPtr]::Zero)
 } catch {}
 
 Write-Host "========================================================" -ForegroundColor Green
