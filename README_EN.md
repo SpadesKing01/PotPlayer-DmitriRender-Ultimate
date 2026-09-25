@@ -147,18 +147,6 @@ To cleanly remove or move directories:
 
 ---
 
-## 📝 Changelog
-
-### v2.0 (2026-09-24)
-- **[Pure Application Branding]**: Simplified desktop shortcut and Open-With menu entries to clean official name `PotPlayer`.
-- **[Zero-Garbage Batch Launchers]**: Re-engineered `【一键绿化安装】.bat` and `【一键彻底卸载】.bat` in pure ASCII with `cls` to eliminate CMD UTF-8 byte offset errors.
-- **[Authentic Yellow Icon Alignment]**: Switched desktop shortcut and default application icon from generic blue triangle (`PotIcons64.dll,0`) to official yellow PotPlayer icon (`PotPlayerMini64.exe,0`).
-- **[Dynamic Relative Time Architecture]**: Upgraded time spoofing from static dates to `/movetime Hours:-17520`, allowing time to flow forward naturally and preventing StarForce clock-rollback triggers.
-- **[Silent Automated Background Reset]**: Added `AutoReset_Dmitri.ps1` and Windows Task Scheduler task `DmitriRender_AutoReset` (running every 20 days) for maintenance-free operation.
-- **[4K 10-bit HDR/HEVC Color Fix]**: Optimized hardware decoding pipeline with D3D11 Copy-Back to NV12, eliminating green screens on HDR content.
-
----
-
 ## ⚖️ Disclaimer
 
 This package is intended solely for personal media evaluation and technical research. All proprietary software components (DmitriRender, PotPlayer, LAV Filters, madVR) belong to their respective original copyright holders. Please support the official developers.

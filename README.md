@@ -151,18 +151,6 @@ PotPlayer_GreenPackage/
 
 ---
 
-## 📝 更新日志 (Changelog)
-
-### v2.0 (2026-09-24)
-- **[官方原生图标对齐]**：桌面快捷方式与 Windows 打开方式列表图标统一锁定为 PotPlayer 官方经典黄色圆角方块图标（`PotPlayerMini64.exe,0`），彻底摒弃通用蓝线三角形与 RunAsDate 日历图标。
-- **[默认应用与打开方式纯净命名]**：全面配置 Windows `Capabilities` 与 `RegisteredApplications` 认证，右键菜单及系统默认应用识别为纯净正版名称 `PotPlayer`。
-- **[动态相对时间欺骗架构]**：时间伪装算法由固定绝对日期升级为 `/movetime Hours:-17520` 相对时间偏移机制，时钟随系统自然流逝，彻底打破 StarForce 2026 年硬边界并根除“时钟倒退检测”锁死。
-- **[后台静默全自动续期]**：内置独立维护脚本 `AutoReset_Dmitri.ps1`，注册 Windows 任务计划程序 `DmitriRender_AutoReset`（每 20 天自动执行），实现终身免人工维护与自动签发。
-- **[4K 10-bit HDR 色彩绿屏根治]**：调优硬件解码预设，强制启用 `D3D11 Copy-Back` 显存直转 NV12，彻底解决 DmitriRender 渲染高位深 HEVC/HDR 视频时的半边绿屏与色彩错乱。
-- **[状态自检与核验命令]**：集成计划任务运行状态核验指令与 DirectShow 滤镜链 OSD 自检说明，方便排查运行状态。
-
----
-
 ## ⚖️ 免责声明 (Disclaimer)
 
 本项目仅用于技术交流与个人多媒体调优测试。涉及的第三方商业/闭源组件（DmitriRender、PotPlayer、LAV Filters、madVR）版权均归各自原始著作权人所有。请支持正版软件。
