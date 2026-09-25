@@ -1,4 +1,4 @@
-﻿# Install_Green.ps1 - Automated Setup for Portable PotPlayer + DmitriRender + LAV Filters
+# Install_Green.ps1 - Automated Setup for Portable PotPlayer + DmitriRender + LAV Filters
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $ErrorActionPreference = "Continue"
 
@@ -24,6 +24,25 @@ $sampleVideo = Join-Path $potDir "sample.mp4"
 Write-Host "[1/7] 正在关闭现有播放器及后台进程..." -ForegroundColor Yellow
 Get-Process | Where-Object { $_.ProcessName -match "PotPlayer|pcnsl|drtm" } | Stop-Process -Force -ErrorAction SilentlyContinue
 Start-Sleep -Seconds 1
+
+# Auto-detect and handle official PotPlayerMini64 updates
+$potCoreExe = Join-Path $potDir "PotPlayer64_Core.exe"
+$patchLauncher = Join-Path $potDir "Patch\Launcher.exe"
+$patchCs = Join-Path $potDir "Patch\Launcher.cs"
+
+if (Test-Path $potExe) {
+    $exeSize = (Get-Item $potExe).Length
+    if ($exeSize -gt 100000) {
+        Write-Host "    检测到官方新版 PotPlayerMini64.exe ($([math]::Round($exeSize/1MB, 2)) MB)，正在自动转化为核心组件..." -ForegroundColor Green
+        Copy-Item -Path $potExe -Destination $potCoreExe -Force
+        if (Test-Path $patchLauncher) {
+            Copy-Item -Path $patchLauncher -Destination $potExe -Force
+        } elseif (Test-Path $patchCs) {
+            & "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /target:winexe /platform:x64 /win32icon:"$potDir\potplayer.ico" /out:"$potExe" "$patchCs" | Out-Null
+        }
+        Write-Host "    已自动部署免续期启动加载器并保留新版核心！" -ForegroundColor Green
+    }
+}
 
 # 2. Deploy DmitriRender to %APPDATA%
 Write-Host "[2/7] 正在部署 DmitriRender 插帧核心组件..." -ForegroundColor Yellow

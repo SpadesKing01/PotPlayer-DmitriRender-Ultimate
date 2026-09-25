@@ -1,4 +1,4 @@
-﻿# AutoReset_Dmitri.ps1 - Portable DmitriRender Auto Renewal Script
+# AutoReset_Dmitri.ps1 - Portable DmitriRender Auto Renewal Script
 $potDir = $PSScriptRoot
 if (-not $potDir) { $potDir = Split-Path -Parent $MyInvocation.MyCommand.Path }
 $runAsDate = Join-Path $potDir "RunAsDate.exe"
@@ -8,6 +8,18 @@ $sampleVideo = Join-Path $potDir "sample.mp4"
 
 # 1. Stop active processes
 Get-Process | Where-Object { $_.ProcessName -match "PotPlayer|pcnsl|drtm" } | Stop-Process -Force -ErrorAction SilentlyContinue
+
+# Auto-heal if PotPlayerMini64 was overwritten by an official update
+$potCoreExe = Join-Path $potDir "PotPlayer64_Core.exe"
+$patchLauncher = Join-Path $potDir "Patch\Launcher.exe"
+if (Test-Path $potExe) {
+    if ((Get-Item $potExe).Length -gt 100000) {
+        Copy-Item -Path $potExe -Destination $potCoreExe -Force
+        if (Test-Path $patchLauncher) {
+            Copy-Item -Path $patchLauncher -Destination $potExe -Force
+        }
+    }
+}
 
 # 2. Clean expired registry and trial files
 Remove-Item -Path "HKCU:\Software\DmitriRender" -Recurse -Force -ErrorAction SilentlyContinue
