@@ -10,6 +10,9 @@ $potDir = $PSScriptRoot
 if (-not $potDir) { $potDir = Split-Path -Parent $MyInvocation.MyCommand.Path }
 
 $potExe = Join-Path $potDir "PotPlayerMini64.exe"
+$potCoreExe = Join-Path $potDir "PotPlayer64_Core.exe"
+$patchLauncher = Join-Path $potDir "Patch\Launcher.exe"
+$patchCs = Join-Path $potDir "Patch\Launcher.cs"
 $runAsDate = Join-Path $potDir "RunAsDate.exe"
 $iconsDll = Join-Path $potDir "PotIcons64.dll"
 $patchSrc = Join-Path $potDir "Patch\version.dll"
@@ -20,15 +23,28 @@ $appDataDmitri = Join-Path $env:APPDATA "DmitriRender"
 $lavX64 = Join-Path $potDir "LAVFilters\x64"
 $sampleVideo = Join-Path $potDir "sample.mp4"
 
-# 1. Terminate existing processes and clean legacy core files
+# 1. Terminate existing processes and auto-deploy launcher
 Write-Host "[1/7] 正在关闭现有播放器及后台进程..." -ForegroundColor Yellow
 Get-Process | Where-Object { $_.ProcessName -match "PotPlayer|pcnsl|drtm|RunAsDate" } | Stop-Process -Force -ErrorAction SilentlyContinue
 Start-Sleep -Seconds 1
 
-Remove-Item -Path (Join-Path $potDir "PotPlayer64_Core.exe") -Force -ErrorAction SilentlyContinue
-Remove-Item -Path (Join-Path $potDir "Patch\Launcher.*") -Force -ErrorAction SilentlyContinue
-Remove-Item -Path (Join-Path $potDir "Playlist\PotPlayer64_Core.dpl") -Force -ErrorAction SilentlyContinue
-Remove-Item -Path "HKCU:\Software\Daum\PotPlayer64_Core" -Recurse -Force -ErrorAction SilentlyContinue
+if (Test-Path $potExe) {
+    $exeSize = (Get-Item $potExe).Length
+    if ($exeSize -gt 100000) {
+        Write-Host "    检测到官方新版 PotPlayerMini64.exe ($([math]::Round($exeSize/1MB, 2)) MB)，正在自动配置为核心组件..." -ForegroundColor Green
+        Copy-Item -Path $potExe -Destination $potCoreExe -Force
+        attrib +h +s $potCoreExe
+        Write-Host "    已自动部署免续期启动加载器并保留新版核心！" -ForegroundColor Green
+    }
+}
+if (Test-Path $patchLauncher) {
+    Copy-Item -Path $patchLauncher -Destination $potExe -Force
+} elseif (Test-Path $patchCs) {
+    & "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /target:winexe /platform:x64 /win32icon:"$potDir\potplayer.ico" /out:"$potExe" "$patchCs" | Out-Null
+}
+if (Test-Path $potCoreExe) {
+    attrib +h +s $potCoreExe
+}
 
 # 2. Deploy DmitriRender to %APPDATA%
 Write-Host "[2/7] 正在部署 DmitriRender 插帧核心组件..." -ForegroundColor Yellow
@@ -37,7 +53,7 @@ if (-not (Test-Path $appDataDmitri)) {
 }
 Copy-Item -Path "$potDir\DmitriRender\*" -Destination $appDataDmitri -Recurse -Force
 Remove-Item -Path "$appDataDmitri\x64\Jongan.ini" -Force -ErrorAction SilentlyContinue
-Remove-Item -Path "HKCU:\Software\DmitriRender" -Recurse -Force -ErrorAction SilentlyContinue
+& reg.exe delete "HKCU\Software\DmitriRender" /f 2>$null | Out-Null
 
 $desktopIni = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'desktop.ini'
 if (Test-Path $desktopIni) {
@@ -77,6 +93,11 @@ if (Test-Path $templateReg) {
     $finalReg | Set-Content $tempRegFile -Encoding Unicode
     & reg.exe import $tempRegFile | Out-Null
     Remove-Item $tempRegFile -Force -ErrorAction SilentlyContinue
+
+    # Sync configuration to both PotPlayerMini64 and PotPlayer64_Core keys
+    if (Test-Path "HKCU:\Software\Daum\PotPlayerMini64") {
+        Copy-Item -Path "HKCU:\Software\Daum\PotPlayerMini64" -Destination "HKCU:\Software\Daum\PotPlayer64_Core" -Recurse -Force -ErrorAction SilentlyContinue
+    }
 }
 
 # 5. Initialize StarForce License & Watermark Bypass
@@ -84,9 +105,9 @@ Write-Host "[5/7] 正在初始化时间伪装及免水印环境..." -ForegroundC
 Remove-Item -Path $potPatch -Force -ErrorAction SilentlyContinue
 
 if (Test-Path $sampleVideo) {
-    Start-Process -FilePath $runAsDate -ArgumentList "/immediate /movetime Hours:-17520 `"$potExe`" `"$sampleVideo`"" -WindowStyle Hidden
+    Start-Process -FilePath $potExe -ArgumentList "`"$sampleVideo`"" -WindowStyle Hidden
 } else {
-    Start-Process -FilePath $runAsDate -ArgumentList "/immediate /movetime Hours:-17520 `"$potExe`"" -WindowStyle Hidden
+    Start-Process -FilePath $potExe -WindowStyle Hidden
 }
 Start-Sleep -Seconds 6
 Get-Process | Where-Object { $_.ProcessName -match "PotPlayer|pcnsl|drtm" } | Stop-Process -Force -ErrorAction SilentlyContinue
@@ -119,14 +140,14 @@ $wsh = New-Object -ComObject WScript.Shell
 $desktopPath = [Environment]::GetFolderPath('Desktop')
 Remove-Item -Path (Join-Path $desktopPath "PotPlayer (插帧免续期版).lnk") -Force -ErrorAction SilentlyContinue
 $shortcut = $wsh.CreateShortcut((Join-Path $desktopPath "PotPlayer.lnk"))
-$shortcut.TargetPath = $runAsDate
-$shortcut.Arguments = "/immediate /movetime Hours:-17520 `"$potExe`""
+$shortcut.TargetPath = $potExe
+$shortcut.Arguments = ""
 $shortcut.WorkingDirectory = $potDir
 $shortcut.IconLocation = "$potExe,0"
 $shortcut.Description = "PotPlayer 64-bit with DmitriRender 60FPS"
 $shortcut.Save()
 
-$cmd = "`"$runAsDate`" /immediate /movetime Hours:-17520 `"$potExe`" `"%1`""
+$cmd = "`"$potExe`" `"%1`""
 $escapedCmd = $cmd.Replace('\', '\\').Replace('"', '\"')
 $escapedIcons = $iconsDll.Replace('\', '\\')
 $escapedPot = $potExe.Replace('\', '\\')
@@ -141,22 +162,24 @@ $extIcons = @{
 $sb = New-Object System.Text.StringBuilder
 [void]$sb.AppendLine("Windows Registry Editor Version 5.00`r`n")
 
-# Capabilities
-[void]$sb.AppendLine("[HKEY_CURRENT_USER\Software\Daum\PotPlayerMini64\Capabilities]")
-[void]$sb.AppendLine('"ApplicationName"="PotPlayer"')
-[void]$sb.AppendLine('"ApplicationDescription"="PotPlayer 64-bit 终极免续期插帧绿化版"')
-[void]$sb.AppendLine(('"ApplicationIcon"="{0},0"' -f $escapedPot))
-[void]$sb.AppendLine("`r`n[HKEY_CURRENT_USER\Software\RegisteredApplications]")
-[void]$sb.AppendLine('"PotPlayerMini64"="Software\\Daum\\PotPlayerMini64\\Capabilities"`r`n')
+# Capabilities & RegisteredApplications (HKCU + HKLM)
+foreach ($root in @("HKEY_CURRENT_USER", "HKEY_LOCAL_MACHINE")) {
+    [void]$sb.AppendLine(('[{0}\Software\Daum\PotPlayerMini64\Capabilities]' -f $root))
+    [void]$sb.AppendLine('"ApplicationName"="PotPlayer"')
+    [void]$sb.AppendLine('"ApplicationDescription"="PotPlayer 64-bit 终极免续期插帧绿化版"')
+    [void]$sb.AppendLine(('"ApplicationIcon"="{0},0"' -f $escapedPot))
+    [void]$sb.AppendLine(('`r`n[{0}\Software\RegisteredApplications]' -f $root))
+    [void]$sb.AppendLine('"PotPlayerMini64"="Software\\Daum\\PotPlayerMini64\\Capabilities"`r`n')
 
-[void]$sb.AppendLine("[HKEY_CURRENT_USER\Software\Daum\PotPlayerMini64\Capabilities\FileAssociations]")
-foreach ($ext in $extIcons.Keys) {
-    [void]$sb.AppendLine(('".{0}"="PotPlayerMini64.{0}"' -f $ext))
+    [void]$sb.AppendLine(('[{0}\Software\Daum\PotPlayerMini64\Capabilities\FileAssociations]' -f $root))
+    foreach ($ext in $extIcons.Keys) {
+        [void]$sb.AppendLine(('".{0}"="PotPlayerMini64.{0}"' -f $ext))
+    }
+    [void]$sb.AppendLine("")
 }
-[void]$sb.AppendLine("")
 
-# Applications registration & DropTarget purge
-foreach ($app in @("PotPlayerMini64.exe", "RunAsDate.exe")) {
+# Applications registration, SupportedTypes & DropTarget purge
+foreach ($app in @("PotPlayerMini64.exe", "PotPlayer64_Core.exe", "RunAsDate.exe")) {
     foreach ($root in @("HKEY_CURRENT_USER\Software\Classes\Applications", "HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Applications")) {
         [void]$sb.AppendLine(('[{0}\{1}]' -f $root, $app))
         [void]$sb.AppendLine('@="PotPlayer"')
@@ -169,6 +192,10 @@ foreach ($app in @("PotPlayerMini64.exe", "RunAsDate.exe")) {
         [void]$sb.AppendLine(('@="{0}"' -f $escapedCmd))
         [void]$sb.AppendLine(('[-{0}\{1}\shell\open\DropTarget]' -f $root, $app))
         [void]$sb.AppendLine(('[-{0}\{1}\shell\play\DropTarget]' -f $root, $app))
+        [void]$sb.AppendLine(('[{0}\{1}\SupportedTypes]' -f $root, $app))
+        foreach ($ext in $extIcons.Keys) {
+            [void]$sb.AppendLine(('".{0}"=""' -f $ext))
+        }
         [void]$sb.AppendLine("")
     }
 }
@@ -193,16 +220,11 @@ foreach ($ext in $extIcons.Keys) {
         [void]$sb.AppendLine(('[-{0}\{1}\shell\play\DropTarget]' -f $root, $progId))
         [void]$sb.AppendLine(('[-{0}\{1}\shell\Enqueue\DropTarget]' -f $root, $progId))
         [void]$sb.AppendLine("")
-    }
 
-    [void]$sb.AppendLine(('[HKEY_CURRENT_USER\Software\Classes\.{0}]' -f $ext))
-    [void]$sb.AppendLine(('@="{0}"' -f $progId))
-    [void]$sb.AppendLine(('`r`n[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.{0}\OpenWithList]' -f $ext))
-    [void]$sb.AppendLine('"a"="PotPlayerMini64.exe"')
-    [void]$sb.AppendLine('"MRUList"="a"')
-    [void]$sb.AppendLine(('`r`n[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.{0}\OpenWithProgids]' -f $ext))
-    [void]$sb.AppendLine(('"{0}"=hex:' -f $progId))
-    [void]$sb.AppendLine('"Applications\\PotPlayerMini64.exe"=hex:`r`n')
+        [void]$sb.AppendLine(('[{0}\.{1}]' -f $root, $ext))
+        [void]$sb.AppendLine(('@="{0}"' -f $progId))
+        [void]$sb.AppendLine("")
+    }
 }
 
 $tempAssocReg = Join-Path $env:TEMP "PotPlayer_Assoc.reg"
@@ -218,7 +240,7 @@ Write-Host "========================================================" -Foregroun
 Write-Host "  安装完成！PotPlayer 绿化版已就绪。" -ForegroundColor Green
 Write-Host "  - 默认视频播放器: 已关联 20 种媒体格式 (原版/升级覆盖均直接生效)" -ForegroundColor Green
 Write-Host "  - 播放器图标: 官方高清矢量图标已全局生效" -ForegroundColor Green
-Write-Host "  - 动态时间欺骗: -17520小时 (免续期，支持双击直接打开与拖入播放)" -ForegroundColor Green
+Write-Host "  - 动态时间欺骗: 动态2年前 (双击直接播放/先开拖入均稳定免续期)" -ForegroundColor Green
 Write-Host "  - 后台静默续期任务: DmitriRender_AutoReset (每20天下午15:00自动维护)" -ForegroundColor Green
 Write-Host "  - DmitriRender 插帧 + 去水印: 已生效" -ForegroundColor Green
 Write-Host "========================================================" -ForegroundColor Green

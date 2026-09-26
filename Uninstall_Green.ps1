@@ -8,6 +8,8 @@ Write-Host "========================================================" -Foregroun
 
 $potDir = $PSScriptRoot
 if (-not $potDir) { $potDir = Split-Path -Parent $MyInvocation.MyCommand.Path }
+$potExe = Join-Path $potDir "PotPlayerMini64.exe"
+$potCoreExe = Join-Path $potDir "PotPlayer64_Core.exe"
 $appDataDmitri = Join-Path $env:APPDATA "DmitriRender"
 $lavX64 = Join-Path $potDir "LAVFilters\x64"
 
@@ -53,10 +55,13 @@ foreach ($ext in $exts) {
     [void]$sb.AppendLine(("[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\PotPlayerMini64.{0}]" -f $ext))
 }
 [void]$sb.AppendLine("[-HKEY_CURRENT_USER\Software\Classes\Applications\PotPlayerMini64.exe]")
+[void]$sb.AppendLine("[-HKEY_CURRENT_USER\Software\Classes\Applications\PotPlayer64_Core.exe]")
 [void]$sb.AppendLine("[-HKEY_CURRENT_USER\Software\Classes\Applications\RunAsDate.exe]")
 [void]$sb.AppendLine("[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Applications\PotPlayerMini64.exe]")
+[void]$sb.AppendLine("[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Applications\PotPlayer64_Core.exe]")
 [void]$sb.AppendLine("[-HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Applications\RunAsDate.exe]")
 [void]$sb.AppendLine("[-HKEY_CURRENT_USER\Software\Daum\PotPlayerMini64\Capabilities]")
+[void]$sb.AppendLine("[-HKEY_LOCAL_MACHINE\SOFTWARE\Daum\PotPlayerMini64\Capabilities]")
 [void]$sb.AppendLine("[-HKEY_CURRENT_USER\Software\Daum\PotPlayer64_Core]")
 
 $tempUninstReg = Join-Path $env:TEMP "PotPlayer_Uninst.reg"
@@ -64,13 +69,21 @@ $tempUninstReg = Join-Path $env:TEMP "PotPlayer_Uninst.reg"
 & reg.exe import $tempUninstReg 2>$null | Out-Null
 Remove-Item $tempUninstReg -Force -ErrorAction SilentlyContinue
 
-# 5. Clean DmitriRender AppData, Core binaries and Registry
+& reg.exe delete "HKCU\Software\RegisteredApplications" /v "PotPlayerMini64" /f 2>$null | Out-Null
+& reg.exe delete "HKLM\SOFTWARE\RegisteredApplications" /v "PotPlayerMini64" /f 2>$null | Out-Null
+
+# 5. Clean DmitriRender AppData, restore original executable and clean Registry
 Write-Host "[5/5] 正在清理 DmitriRender 注册表与缓存..." -ForegroundColor Yellow
-Remove-Item -Path "HKCU:\Software\DmitriRender" -Recurse -Force -ErrorAction SilentlyContinue
+& reg.exe delete "HKCU\Software\DmitriRender" /f 2>$null | Out-Null
 Remove-Item -Path "HKCU:\Software\Daum\PotPlayer64_Core" -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item -Path (Join-Path $potDir "PotPlayer64_Core.exe") -Force -ErrorAction SilentlyContinue
-Remove-Item -Path (Join-Path $potDir "Patch\Launcher.*") -Force -ErrorAction SilentlyContinue
 Remove-Item -Path (Join-Path $potDir "Playlist\PotPlayer64_Core.dpl") -Force -ErrorAction SilentlyContinue
+
+if (Test-Path $potCoreExe) {
+    attrib -s -h $potCoreExe
+    Copy-Item $potCoreExe $potExe -Force
+    Remove-Item $potCoreExe -Force -ErrorAction SilentlyContinue
+}
+
 Remove-Item -Path $appDataDmitri -Recurse -Force -ErrorAction SilentlyContinue
 
 # Fast shell refresh
