@@ -31,8 +31,8 @@ Completely overcomes DmitriRender StarForce expiration locks, 2026 calendar hard
 ## 🌟 Core Highlights
 
 1. **Dynamic Relative Time Spoofing (Core Breakthrough)**:
-   - Configured with `RunAsDate` relative time parameter `/movetime Hours:-17520` (constantly 2 years behind real time).
-   - **Time flows synchronously with system clock**, eliminating StarForce "clock rollback detection" fatal errors caused by static fixed dates.
+   - Dedicated launcher dynamically calculates and injects time, **consistently maintaining a relative 2-year offset behind real-time clock (safe 2024 window)**.
+   - **Time advances synchronously with the real clock**, completely eliminating StarForce "clock rollback detection" fatal errors and the 2026 hard boundary lock.
 2. **Silent Automated Background License Reset**:
    - Built-in `AutoReset_Dmitri.ps1` script paired with Windows Task Scheduler task `DmitriRender_AutoReset`.
    - Automatically and silently clears trial registry keys and timestamps every 20 days at 15:00 to re-issue a fresh 30-day window without user intervention.
@@ -44,8 +44,8 @@ Completely overcomes DmitriRender StarForce expiration locks, 2026 calendar hard
    - Prioritizes 64-bit LAV Audio Decoder for bit-perfect output of Dolby Atmos, EAC3, TrueHD, DTS-HD Master Audio.
 6. **Integrated madVR Renderer**:
    - Includes full madVR 0.92.17 suite for enthusiasts pursuing state-of-the-art scaling, debanding, and HDR tone mapping.
-7. **Clean PotPlayer Branding & Official Icons**:
-   - Injects Windows `Capabilities` and `RegisteredApplications` entries so Windows recognizes it as `PotPlayer`.
+7. **Compliant Shell Registration & Authentic Branding**:
+   - Registers Windows `Capabilities`, `RegisteredApplications`, and `SupportedTypes` conforming strictly to modern Windows application standards.
    - Desktop shortcut and Open-With menus strictly use authentic yellow PotPlayer rounded-square icon (`PotPlayerMini64.exe,0`), eliminating RunAsDate calendar icons.
 
 ---
@@ -54,21 +54,40 @@ Completely overcomes DmitriRender StarForce expiration locks, 2026 calendar hard
 
 ```text
 PotPlayer/
-├── PotPlayerMini64.exe               # PotPlayer 64-bit main executable
+├── PotPlayerMini64.exe               # Self-healing renewal-free launcher (official icon)
+├── PotPlayer64_Core.exe              # Official PotPlayer 64-bit core executable (hidden)
 ├── PotPlayer64.dll                   # Core shared library
 ├── RunAsDate.exe                     # 64-bit dynamic time spoofing injector
 ├── PotIcons64.dll                    # Official icon library for media formats
 ├── version.dll                       # Watermark removal memory hook
 ├── AutoReset_Dmitri.ps1              # Automated silent license refresh script
+├── sample.mp4                        # Self-test media clip for verification
 ├── PotPlayer_Config.template.reg     # Tuned configuration registry template
 ├── 【一键绿化安装】.bat              # Administrator one-click installer
 ├── 【一键彻底卸载】.bat              # Administrator one-click uninstaller
 ├── DmitriRender/                     # DmitriRender 5.0.0.1 64-bit core files
 ├── LAVFilters/                       # LAV Filters x64 suite (Audio/Video/Splitter)
 ├── madVR/                            # madVR 0.92.17 video renderer suite
-├── Patch/                            # Backup of clean memory patch
+├── Patch/                            # Patch backups and launcher C# source code
 └── !vc2017_x64.exe                   # Visual C++ 2017 64-bit runtime installer
 ```
+
+---
+
+## ⚠️ Important Notes & Best Practices
+
+1. **Default App Association (First-Time Setup)**:
+   - Modern Windows 10/11 includes kernel-level tamper protection (`UCPD.sys`) forbidding third-party scripts from silently hijacking user associations.
+   - **First use or after fresh install**: Simply **right-click any media file (e.g. `.mp4`) $\rightarrow$ Open with $\rightarrow$ Choose another app $\rightarrow$ Select PotPlayer and check "Always use this app"**. This issues a legitimate kernel-signed cryptographic hash; Windows will retain this association permanently across reboots.
+2. **Seamless Official Upgrades**:
+   - When a newer official PotPlayer version releases, **download official 64-bit `PotPlayerMini64.exe` and directly paste/overwrite into this folder**.
+   - Then simply run 【一键绿化安装.bat】 once as Administrator. The script automatically converts the official binary into the hidden core and retains the self-healing launcher.
+3. **Playback Behavior**:
+   - Whether opened via desktop shortcut, double-clicked from File Explorer, or dragging media into an open window, the player automatically enters the safe relative time window.
+4. **Complete Clean Uninstallation**:
+   - Run 【一键彻底卸载.bat】 as Administrator to unregister DirectShow filters, delete scheduled tasks, and revert the core binary to clean official state.
+5. **Frame Interpolation Verification**:
+   - Press **`Tab`** during video playback to verify output fps reaches 60.00 fps with `DmitriRender` and `LAV Audio Decoder` active.
 
 ---
 
@@ -82,24 +101,13 @@ In the extracted directory, **right-click 【一键绿化安装.bat】** and sel
 
 The script will automatically perform:
 1. Terminate running player instances and background helper processes;
-2. Deploy and register DmitriRender filters to `%APPDATA%\DmitriRender`;
-3. Register 64-bit LAV Filters (Audio/Video/Splitter) and madVR;
-4. Import performance-tuned registry settings (hardware decode, audio bitstream, OSD);
-5. Initialize time-spoofing environment and watermark bypass;
+2. Auto-detect official new binaries and deploy the self-healing launcher;
+3. Deploy and register DmitriRender filters to `%APPDATA%\DmitriRender`;
+4. Register 64-bit LAV Filters (Audio/Video/Splitter) and madVR;
+5. Import performance-tuned registry settings (hardware decode, audio bitstream, OSD);
 6. Create Windows background maintenance task `DmitriRender_AutoReset` (executing every 20 days at 15:00);
-7. Register Windows Default App capabilities for 20 common media formats;
+7. Register Windows Default App capabilities and SupportedTypes for 20 common media formats;
 8. Lock official yellow PotPlayer icons and refresh Windows Explorer icon cache.
-
-### 3. Default App & Open-With Selection Guide
-
-- **When "How do you want to open this file?" dialog appears**:
-  - Select **`PotPlayer`** (marked with the **classic yellow player icon**);
-  - Check **【Always use this app】**, then click OK.
-  - *Note*: Underlying registry entries are already injected with `-17520h` dynamic clock parameters; selecting it starts the player with automatic 60FPS frame interpolation.
-- **Automatic File Association**:
-  Double-clicking any standard video format (MP4, MKV, AVI, etc.) will directly open and interpolate frames in PotPlayer.
-- **Windows 11 Settings (Optional)**:
-  Press `Win + I` -> Apps -> Default apps -> Search `PotPlayer` -> Click "Set default" to assign all media extensions at once.
 
 ---
 
