@@ -5,7 +5,7 @@
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010%20%2F%2011%20(64--bit)-blue.svg)](#)
 [![PotPlayer](https://img.shields.io/badge/PotPlayer-v1.7.23160-orange.svg)](#)
 [![DmitriRender](https://img.shields.io/badge/DmitriRender-v5.0.0.1-green.svg)](#)
-[![LAV Filters](https://img.shields.io/badge/LAV%20Filters-v0.79.2-purple.svg)](#)
+[![LAV Filters](https://img.shields.io/badge/LAV%20Filters-v0.83.0-purple.svg)](#)
 [![madVR](https://img.shields.io/badge/madVR-v0.92.17-red.svg)](#)
 [![RunAsDate](https://img.shields.io/badge/RunAsDate-v1.41-brightgreen.svg)](#)
 
@@ -21,7 +21,7 @@ Completely overcomes DmitriRender StarForce expiration locks, 2026 calendar hard
 | :--- | :--- | :--- | :--- |
 | **PotPlayer** | `v1.7.23160` | x64 | Core media player (261021), updated with D3D11 default renderer & Whisper AI subtitles |
 | **DmitriRender** | `v5.0.0.1` | x64 | GPU optical flow real-time frame interpolation (60/120/144/240 FPS) |
-| **LAV Filters** | `v0.79.2` | x64 | DirectShow audio/video splitters & decoders (Dolby Atmos/DTS passthrough) |
+| **LAV Filters** | `v0.83.0` | x64 | DirectShow audio/video splitters & decoders (Dolby Vision EL & Atmos/DTS passthrough) |
 | **madVR** | `v0.92.17` | x86/x64 | High-end video renderer with chromatic upscaling & HDR tone mapping |
 | **RunAsDate** | `v1.41` | x64 | Dynamic relative time-spoofing loader (constant 2-year offset window) |
 | **Watermark Patch**| `version.dll` | x64 | In-memory hook patch eliminating DmitriRender floating trial watermark |

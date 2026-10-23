@@ -5,7 +5,7 @@
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010%20%2F%2011%20(64--bit)-blue.svg)](#)
 [![PotPlayer](https://img.shields.io/badge/PotPlayer-v1.7.23160-orange.svg)](#)
 [![DmitriRender](https://img.shields.io/badge/DmitriRender-v5.0.0.1-green.svg)](#)
-[![LAV Filters](https://img.shields.io/badge/LAV%20Filters-v0.79.2-purple.svg)](#)
+[![LAV Filters](https://img.shields.io/badge/LAV%20Filters-v0.83.0-purple.svg)](#)
 [![madVR](https://img.shields.io/badge/madVR-v0.92.17-red.svg)](#)
 [![RunAsDate](https://img.shields.io/badge/RunAsDate-v1.41-brightgreen.svg)](#)
 
@@ -21,7 +21,7 @@
 | :--- | :--- | :--- | :--- |
 | **PotPlayer** | `v1.7.23160` | x64 | 官方核心播放器 (261021)，新增 D3D11 默认渲染器与 Whisper AI 字幕组件 |
 | **DmitriRender** | `v5.0.0.1` | x64 | GPU 光流实时补帧核心，稳定 60/120/144/240 FPS |
-| **LAV Filters** | `v0.79.2` | x64 | 顶级 DirectShow 分离与解码套件，全景声/DTS直出 |
+| **LAV Filters** | `v0.83.0` | x64 | 顶级 DirectShow 分离与解码套件，支持杜比视界EL层与全景声/DTS直出 |
 | **madVR** | `v0.92.17` | x86/x64 | 发烧级视频渲染引擎，高端色阶插值与精准色调映射 |
 | **RunAsDate** | `v1.41` | x64 | 动态相对时钟欺骗器（锁定滞后 2 年相对安全窗口） |
 | **Watermark Patch**| `version.dll` | x64 | 内存补丁，彻底消除 DmitriRender 试用跑动水印 |
